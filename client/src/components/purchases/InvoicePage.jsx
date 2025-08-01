@@ -18,17 +18,18 @@ const InvoicePage = () => {
   const fetchInvoice = async () => {
     try {
       const res = await axios.get(`https://cold-storage-system.onrender.com/api/purchases/${id}`);
-      setPurchase(res.data.purchase); // ⚠️ Might be undefined if backend response doesn't have .purchase
-
-      console.log("📦 Invoice Response:", res.data);
-      setLoading(false);
-      
+      console.log("✅ Invoice Data:", res.data);
+      setPurchase(res.data.purchase);
     } catch (err) {
       console.error("❌ Invoice fetch error:", err.message);
+      setError('Failed to load invoice');
+    } finally {
+      setLoading(false);
     }
   };
   fetchInvoice();
 }, [id]);
+
 
 
   const downloadPDF = async () => {
