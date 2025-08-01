@@ -69,7 +69,9 @@ const App = () => {
           {/* ✅ Purchase Module Routes */}
           <Route path="/purchase-entry" element={<AddPurchase />} />
           <Route path="/purchase-list" element={<PurchaseList />} />
+          
           <Route path="/invoice/:id" element={<InvoicePage />} />
+
           <Route path="/edit-purchase/:id" element={<EditPurchase />} />
           <Route path="/report" element={<ReportPage />} />
 
