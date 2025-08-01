@@ -19,11 +19,19 @@ const stockRoutes = require('./routes/stockRoutes');
 
 const app = express(); // <-- Moved up before middleware
 
+const cors = require('cors');
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://cold-storage-system-1.onrender.com'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://cold-storage-system-1.onrender.com ', // ✅ Use environment variable for frontend URL
-   origin: 'http://localhost:5173', // ✅ Local development URL
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
+
+
 app.use(express.json());
 
 connectDB();
