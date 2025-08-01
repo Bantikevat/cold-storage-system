@@ -1,4 +1,3 @@
-// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -8,6 +7,14 @@ export default defineConfig({
     include: ['react', 'react-dom']
   },
   build: {
-    chunkSizeWarningLimit: 1000 // optional: suppress warnings for big files
+    chunkSizeWarningLimit: 1000
+  },
+  server: {
+    // ✅ Enable React Router fallback for dev
+    historyApiFallback: true
+  },
+  // ✅ Important for static deployment like Render
+  preview: {
+    historyApiFallback: true
   }
 });
