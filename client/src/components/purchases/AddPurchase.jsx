@@ -26,7 +26,7 @@ const AddPurchase = () => {
   useEffect(() => {
     const fetchFarmers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/farmers/all?limit=1000");
+        const res = await axios.get("https://cold-storage-system.onrender.com/api/farmers/all?limit=1000");
         setFarmers(res.data.farmers);
       } catch (err) {
         console.error("Failed to fetch farmers", err);
@@ -57,7 +57,7 @@ const AddPurchase = () => {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/purchases/', payload);
+      await axios.post('https://cold-storage-system.onrender.com/api/purchases/', payload);
       MySwal.fire('Success', 'Purchase saved successfully!', 'success');
       setFormData({
         farmerId: '',

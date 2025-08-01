@@ -18,7 +18,7 @@ const StockForm = () => {
     if (id) {
       const fetchStock = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/stock/${id}`);
+          const res = await axios.get(`https://cold-storage-system.onrender.com/api/stock/${id}`);
           const stock = res.data;
           setProductName(stock.productName);
           setDescription(stock.description || '');
@@ -57,14 +57,14 @@ const StockForm = () => {
 
     try {
       if (id) {
-        await axios.put(`http://localhost:5000/api/stock/update/${id}`, {
+        await axios.put(`https://cold-storage-system.onrender.com/api/stock/update/${id}`, {
           productName: productName.trim(),
           description: description.trim(),
           currentStock: Number(currentStock),
           minStockAlert: Number(minStockAlert),
         });
       } else {
-        await axios.post('http://localhost:5000/api/stock/add', {
+        await axios.post('https://cold-storage-system.onrender.com/api/stock/add', {
           productName: productName.trim(),
           description: description.trim(),
           currentStock: Number(currentStock),

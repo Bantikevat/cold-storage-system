@@ -11,7 +11,7 @@ const StockHistory = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/stock/history/${itemName}`);
+        const res = await axios.get(`https://cold-storage-system.onrender.com/api/stock/history/${itemName}`);
         setHistory(res.data);
       } catch (err) {
         console.error("Error fetching stock history", err.message);

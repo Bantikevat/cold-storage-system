@@ -19,7 +19,7 @@ const EditSales = () => {
   useEffect(() => {
     const fetchSale = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/sales/${id}`);
+        const res = await axios.get(`https://cold-storage-system.onrender.com/api/sales/${id}`);
         console.log('Fetched Sale Data for Edit:', res.data); // Debugging line
         setFormData({
           customerName: res.data.customerName || '',
@@ -51,7 +51,7 @@ const EditSales = () => {
     const { quantity, rate } = formData;
 
     try {
-      await axios.put(`http://localhost:5000/api/sales/${id}`, {
+      await axios.put(`https://cold-storage-system.onrender.com/api/sales/${id}`, {
         ...formData,
         quantity: Number(quantity),
         rate: Number(rate),

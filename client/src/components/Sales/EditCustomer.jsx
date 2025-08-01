@@ -18,7 +18,7 @@ const EditCustomer = () => {
   // 🔹 Fetch customer by ID
   const fetchCustomer = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/customers/${id}`);
+      const res = await axios.get(`https://cold-storage-system.onrender.com/api/customers/${id}`);
       setForm(res.data);
     } catch (err) {
       console.error('❌ Failed to fetch customer:', err);
@@ -39,7 +39,7 @@ const EditCustomer = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/customers/${id}`, form);
+      await axios.put(`https://cold-storage-system.onrender.com/api/customers/${id}`, form);
       alert('✅ Customer updated successfully!');
       navigate('/customer-list');
     } catch (err) {

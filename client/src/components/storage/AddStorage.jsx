@@ -24,7 +24,7 @@ const AddStorage = () => {
   // 🔹 Fetch all farmers
   useEffect(() => {
     setFetchingFarmers(true);
-    axios.get('http://localhost:5000/api/farmers/all')
+    axios.get('https://cold-storage-system.onrender.com/api/farmers/all')
       .then(res => {
         setFarmers(res.data);
         setFetchingFarmers(false);

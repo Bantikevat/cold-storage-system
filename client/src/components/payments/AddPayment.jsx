@@ -20,7 +20,7 @@ const AddPayment = () => {
   useEffect(() => {
     const fetchFarmerName = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/farmers/${farmerId}`);
+        const res = await axios.get(`https://cold-storage-system.onrender.com/api/farmers/${farmerId}`);
         setFarmerName(res.data.name);
       } catch (err) {
         console.error('Error fetching farmer name:', err.message);
@@ -39,7 +39,7 @@ const AddPayment = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/payments/add', {
+      await axios.post('https://cold-storage-system.onrender.com/api/payments/add', {
         farmerId,
         amount: Number(amount),
         date,

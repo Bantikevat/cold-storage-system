@@ -17,7 +17,7 @@ const InvoicePage = () => {
   useEffect(() => {
     const fetchInvoice = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/purchases/${id}`);
+        const res = await axios.get(`https://cold-storage-system.onrender.com/api/purchases/${id}`);
         console.log("Fetched Purchase Data:", res.data); // Log the fetched data
         setPurchase(res.data.purchase);
         setLoading(false);

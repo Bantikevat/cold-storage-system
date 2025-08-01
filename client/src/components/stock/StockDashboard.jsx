@@ -27,7 +27,7 @@ const StockDashboard = () => {
 
   const fetchStocks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/stock');
+      const res = await axios.get('https://cold-storage-system.onrender.com/api/stock');
       if (!res.data?.success) throw new Error('Invalid data format');
       setStocks(res.data.data);
       setError(null);

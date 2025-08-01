@@ -11,7 +11,7 @@ const StorageList = () => {
   const [storage, setStorage] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/storage/all')
+    axios.get('https://cold-storage-system.onrender.com/api/storage/all')
       .then(res => setStorage(res.data))
       .catch(err => console.error('Storage fetch error:', err));
   }, []);
@@ -148,7 +148,7 @@ const StorageList = () => {
                         <button
   onClick={() => {
     if (window.confirm('❌ Delete this entry?')) {
-      axios.delete(`http://localhost:5000/api/storage/${s._id}`)
+      axios.delete(`https://cold-storage-system.onrender.com/api/storage/${s._id}`)
         .then(() => {
           alert('✅ Deleted successfully');
           setStorage(prev => prev.filter(item => item._id !== s._id));

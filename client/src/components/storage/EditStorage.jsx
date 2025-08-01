@@ -22,12 +22,12 @@ const EditStorage = () => {
 
   useEffect(() => {
     // 🔹 Fetch Storage Entry
-    axios.get(`http://localhost:5000/api/storage/${id}`)
+    axios.get(`https://cold-storage-system.onrender.com/api/storage/${id}`)
       .then(res => setForm(res.data))
       .catch(err => console.error('❌ Fetch error:', err));
 
     // 🔹 Fetch Farmer List
-    axios.get('http://localhost:5000/api/farmers/all')
+    axios.get('https://cold-storage-system.onrender.com/api/farmers/all')
       .then(res => setFarmers(res.data))
       .catch(err => console.error('❌ Farmer fetch error:', err));
   }, [id]);
@@ -39,7 +39,7 @@ const EditStorage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/storage/update/${id}`, form);
+      await axios.put(`https://cold-storage-system.onrender.com/api/storage/update/${id}`, form);
       alert('✅ Updated successfully');
       navigate('/storage-list');
     } catch (err) {

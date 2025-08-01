@@ -30,11 +30,11 @@ const EditPurchase = () => {
     const fetchData = async () => {
       try {
         // Fetch farmers list
-        const farmersRes = await axios.get("http://localhost:5000/api/farmers/all?limit=1000");
+        const farmersRes = await axios.get("https://cold-storage-system.onrender.com/api/farmers/all?limit=1000");
         setFarmers(farmersRes.data.farmers);
 
         // Fetch purchase details
-        const purchaseRes = await axios.get(`http://localhost:5000/api/purchases/${id}`);
+        const purchaseRes = await axios.get(`https://cold-storage-system.onrender.com/api/purchases/${id}`);
         const purchaseData = purchaseRes.data.purchase;
 
         setFormData({
@@ -80,7 +80,7 @@ const EditPurchase = () => {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/purchases/${id}`, payload);
+      await axios.put(`https://cold-storage-system.onrender.com/api/purchases/${id}`, payload);
       MySwal.fire('Success', 'Purchase updated successfully!', 'success');
       navigate('/purchase-list');
     } catch (err) {

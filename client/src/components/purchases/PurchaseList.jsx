@@ -42,7 +42,7 @@ const PurchaseList = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get(`http://localhost:5000/api/purchases/all`, {
+      const res = await axios.get(`https://cold-storage-system.onrender.com/api/purchases/all`, {
         params: {
           page: page,
           limit: limit,
@@ -68,7 +68,7 @@ const PurchaseList = () => {
 
   const fetchFarmers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/farmers/all?limit=1000'); // Fetch all farmers for filter dropdown
+      const res = await axios.get('https://cold-storage-system.onrender.com/api/farmers/all?limit=1000'); // Fetch all farmers for filter dropdown
       setFarmers(res.data.farmers);
     } catch (err) {
       console.error('Error fetching farmers for filter:', err.message);
@@ -107,7 +107,7 @@ const PurchaseList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/purchases/${id}`);
+        await axios.delete(`https://cold-storage-system.onrender.com/api/purchases/${id}`);
         MySwal.fire('Deleted!', 'Purchase has been deleted.', 'success');
         fetchPurchases(); // Refresh the list
       } catch (err) {

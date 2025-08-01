@@ -23,7 +23,7 @@ const SalesForm = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/customers/all');
+        const res = await axios.get('https://cold-storage-system.onrender.com/api/customers/all');
         setCustomers(res.data);
       } catch (err) {
         console.error('❌ Error fetching customers:', err);
@@ -74,7 +74,7 @@ const SalesForm = () => {
 
       console.log("🟢 Submitting Sale Data:", payload);
 
-      await axios.post('http://localhost:5000/api/sales/add', payload);
+      await axios.post('https://cold-storage-system.onrender.com/api/sales/add', payload);
       alert('✅ Sale added successfully!');
       setSaleData({
         clientId: '',

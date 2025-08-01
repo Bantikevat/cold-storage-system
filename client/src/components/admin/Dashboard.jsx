@@ -34,7 +34,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/dashboard/dashboard');
+      const res = await axios.get('https://cold-storage-system.onrender.com/api/dashboard/dashboard');
       setData(res.data);
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);

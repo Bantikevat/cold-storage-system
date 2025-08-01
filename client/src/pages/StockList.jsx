@@ -12,7 +12,7 @@ const StockList = () => {
 
   const fetchStocks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/stock');
+      const res = await axios.get('https://cold-storage-system.onrender.com/api/stock');
       setStocks(res.data);
     } catch (err) {
       setError('Failed to fetch stock data');
@@ -43,7 +43,7 @@ const StockList = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/stock/delete/${id}`);
+        await axios.delete(`https://cold-storage-system.onrender.com/api/stock/delete/${id}`);
         fetchStocks(); // Refresh the stock list
       } catch (err) {
         setError('Failed to delete stock');

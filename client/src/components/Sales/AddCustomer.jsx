@@ -32,7 +32,7 @@ const AddCustomer = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:5000/api/customers/add', form);
+      const response = await axios.post('https://cold-storage-system.onrender.com/api/customers/add', form);
       setMessage({ type: 'success', text: '✅ Customer added successfully!' });
       setForm({ name: '', phone: '', email: '', address: '' });
     } catch (err) {

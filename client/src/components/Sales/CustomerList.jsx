@@ -10,7 +10,7 @@ const CustomerList = () => {
   // ✅ Fetch customers
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/customers/all');
+      const res = await axios.get('https://cold-storage-system.onrender.com/api/customers/all');
       setCustomers(res.data);
     } catch (err) {
       console.error('❌ Failed to fetch customers:', err);
@@ -22,7 +22,7 @@ const CustomerList = () => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/customers/${id}`);
+      await axios.delete(`https://cold-storage-system.onrender.com/api/customers/${id}`);
       alert('✅ Customer deleted');
       fetchCustomers(); // refresh
     } catch (err) {
