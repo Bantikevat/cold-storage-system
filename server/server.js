@@ -1,11 +1,12 @@
 const dotenv = require('dotenv');
-dotenv.config(); // ✅ Sabse upar hona chahiye
+dotenv.config(); // ✅ Load environment variables at the very top
 
 const express = require('express');
-const cookieParser = require('cookie-parser'); // <-- Missing import added
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+// Import routes
 const farmerRoutes = require('./routes/farmerRoutes');
 const purchaseRoutes = require('./routes/purchaseRoutes');
 const salesRoutes = require('./routes/salesRoutes');
@@ -17,10 +18,10 @@ const settingsRoutes = require('./routes/settingsRoutes');
 const otpRoutes = require('./routes/otpRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 
-const app = express(); // <-- Moved up before middleware
+// Initialize app
+const app = express();
 
-const cors = require('cors');
-
+// ✅ Allow frontend (local + deployed) to access backend
 const allowedOrigins = [
   'http://localhost:5173',
   'https://cold-storage-system-1.onrender.com'
@@ -31,20 +32,20 @@ app.use(cors({
   credentials: true,
 }));
 
+// ✅ Middleware
+app.use(express.json()); // Parse JSON bodies
+app.use(cookieParser()); // Parse cookies
 
-app.use(express.json());
-
+// ✅ Connect to MongoDB
 connectDB();
 
-app.use(cookieParser());
-app.use(express.json());
-
-// Optional: Logging middleware
+// ✅ Optional request logger
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
+// ✅ API Routes
 app.use('/api/otp', otpRoutes);
 app.use('/api/farmers', farmerRoutes);
 app.use('/api/purchases', purchaseRoutes);
@@ -56,15 +57,16 @@ app.use('/api/stock', stockRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Error handling middleware
+// ✅ Error handling (last middleware)
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Server Error:', err.stack);
   if (res.headersSent) {
     return next(err);
   }
-  res.status(err.status || 500).json({ error: 'Something broke!' });
+  res.status(err.status || 500).json({ error: err.message || 'Something went wrong!' });
 });
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
