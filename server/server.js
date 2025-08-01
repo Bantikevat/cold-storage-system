@@ -20,9 +20,10 @@ const stockRoutes = require('./routes/stockRoutes');
 const app = express(); // <-- Moved up before middleware
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://cold-storage-system-1.onrender.com/' ,
+  origin: process.env.FRONTEND_URL || 'https://cold-storage-system-1.onrender.com',
   credentials: true
 }));
+app.use(express.json());
 
 connectDB();
 
