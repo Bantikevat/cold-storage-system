@@ -93,6 +93,7 @@ const App = () => {
           {/* ✅ Stock Module Routes */}
           <Route path="/stock/add" element={<ManualStockForm />} />
           <Route path="/stock" element={<StockList />} />
+          
 
           {/* ✅ Settings */}
           <Route path="/settings" element={<SettingsPage />} />
