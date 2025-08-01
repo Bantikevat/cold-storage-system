@@ -165,7 +165,10 @@ exports.getAllPurchases = async (req, res) => {
          return res.status(404).json({ success: false, message: 'Purchase not found' });
        }
 
-       res.status(200).json({ success: true, purchase });
+       
+       res.status(200).json({ success: true, purchase }); // ✅ Wrap in object
+
+
      } catch (error) {
        console.error('Error fetching purchase:', error);
        res.status(500).json({ success: false, message: 'Server error while fetching purchase', error: error.message });

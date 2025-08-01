@@ -15,24 +15,21 @@ const InvoicePage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchInvoice = async () => {
-      try {
-        const res = await axios.get(`https://cold-storage-system.onrender.com/api/purchases/${id}`);
-        console.log("Fetched Purchase Data:", res.data); // Log the fetched data
-        setPurchase(res.data.purchase);
-        setLoading(false);
+  const fetchInvoice = async () => {
+    try {
+      const res = await axios.get(`https://cold-storage-system.onrender.com/api/purchases/${id}`);
+      setPurchase(res.data.purchase); // ⚠️ Might be undefined if backend response doesn't have .purchase
 
-      } catch (err) {
-        console.error('Error fetching invoice:', err.message);
-        setError('Failed to load invoice details.');
-        MySwal.fire('Error', 'Failed to load invoice details.', 'error');
-      } finally {
-        setLoading(false);
+      console.log("📦 Invoice Response:", res.data);
+      setLoading(false);
+      
+    } catch (err) {
+      console.error("❌ Invoice fetch error:", err.message);
+    }
+  };
+  fetchInvoice();
+}, [id]);
 
-      }
-    };
-    if (id) fetchInvoice();
-  }, [id]);
 
   const downloadPDF = async () => {
     const input = document.getElementById('invoice-content');
