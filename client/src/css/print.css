@@ -1,0 +1,219 @@
+
+/* Print Styles for Invoice */
+@media print {
+  body {
+    font-family: 'Arial', sans-serif;
+    font-size: 12pt;
+    line-height: 1.4;
+    color: black !important;
+    background: white !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:block {
+    display: block !important;
+  }
+
+  /* Hide unnecessary elements */
+  nav,
+  .sidebar,
+  .topbar,
+  .no-print,
+  button,
+  .btn,
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Invoice specific styles */
+  #invoice-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Table styles for print */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #ddd !important;
+    padding: 8px !important;
+    font-size: 11pt !important;
+  }
+
+  table thead {
+    background-color: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Header styles */
+  .invoice-header {
+    border-bottom: 2px solid #0369a1 !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 15px !important;
+  }
+
+  /* Ensure colors are preserved */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Grid layouts for print */
+  .print-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Amount highlight */
+  .total-amount {
+    background-color: #f0f9ff !important;
+    border: 2px solid #0369a1 !important;
+    padding: 15px !important;
+    text-align: center !important;
+    font-size: 16pt !important;
+    font-weight: bold !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Signature area */
+  .signature-area {
+    margin-top: 40px !important;
+    border-top: 1px solid #ddd !important;
+    padding-top: 20px !important;
+  }
+
+  .signature-line {
+    border-bottom: 1px solid #000 !important;
+    width: 200px !important;
+    display: inline-block !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Page breaks */
+  .page-break {
+    page-break-before: always !important;
+  }
+
+  .no-page-break {
+    page-break-inside: avoid !important;
+  }
+
+  /* Margins for print */
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+
+  /* Remove rounded corners and shadows for print */
+  .rounded,
+  .rounded-lg,
+  .rounded-xl,
+  .shadow,
+  .shadow-lg,
+  .shadow-xl {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Ensure text is black */
+  .text-gray-600,
+  .text-gray-700,
+  .text-blue-600,
+  .text-green-600 {
+    color: #000 !important;
+  }
+
+  /* Keep important colors */
+  .text-sky-700 {
+    color: #0369a1 !important;
+  }
+
+  .bg-sky-700 {
+    background-color: #0369a1 !important;
+    color: white !important;
+  }
+}
+
+/* Responsive adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+  #invoice-content {
+    padding: 16px !important;
+  }
+
+  .invoice-header {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  table {
+    font-size: 12px !important;
+  }
+
+  .print-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Dark mode override for printing */
+@media (prefers-color-scheme: dark) {
+  @media print {
+    * {
+      color: black !important;
+      background: white !important;
+    }
+  }
+}
+
+/* Ensure consistent styling across browsers */
+* {
+  box-sizing: border-box;
+}
+
+/* Invoice layout improvements */
+.invoice-section {
+  margin-bottom: 20px;
+  page-break-inside: avoid;
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.invoice-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.invoice-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.invoice-total {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e3f2fd;
+  border-radius: 5px;
+}
