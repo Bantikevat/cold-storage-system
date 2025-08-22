@@ -1,10 +1,9 @@
-
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Layout from '../layout/Layout';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Layout from "../layout/Layout";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
@@ -14,10 +13,15 @@ const EditCustomer = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [customer, setCustomer] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    address: ''
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    state: "",
+    gstin: "",
+    creditLimit: "",
+    remarks: ""
   });
 
   useEffect(() => {
@@ -26,17 +30,31 @@ const EditCustomer = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get(`https://cold-storage-system.onrender.com/api/customers/${id}`);
-      setCustomer(response.data);
-    } catch (error) {
-      console.error('Error fetching customer:', error);
-      MySwal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Failed to fetch customer details',
-        confirmButtonColor: '#0369a1'
+      const response = await axios.get(
+        `https://cold-storage-system.onrender.com/api/customers/${id}`
+      );
+
+      // ✅ Default values fix
+      setCustomer({
+        name: response.data.name || "",
+        phone: response.data.phone || "",
+        email: response.data.email || "",
+        address: response.data.address || "",
+        city: response.data.city || "",
+        state: response.data.state || "",
+        gstin: response.data.gstin || "",
+        creditLimit: response.data.creditLimit || "",
+        remarks: response.data.remarks || ""
       });
-      navigate('/customer-list');
+    } catch (error) {
+      console.error("Error fetching customer:", error);
+      MySwal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to fetch customer details",
+        confirmButtonColor: "#0369a1",
+      });
+      navigate("/customer-list");
     } finally {
       setLoading(false);
     }
@@ -44,35 +62,43 @@ const EditCustomer = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCustomer(prev => ({
+    setCustomer((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-
     try {
-      await axios.put(`https://cold-storage-system.onrender.com/api/customers/update/${id}`, customer);
-      
-      MySwal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Customer updated successfully!',
-        confirmButtonColor: '#0369a1'
-      }).then(() => {
-        navigate('/customer-list');
-      });
+      // ✅ Safe payload banaya
+      const payload = {
+        name: customer.name?.trim() || "",
+        phone: customer.phone ? customer.phone.replace(/\D/g, "") : "",
+        email: customer.email?.trim() || "",
+        address: customer.address?.trim() || "",
+        city: customer.city?.trim() || "",
+        state: customer.state?.trim() || "",
+        gstin: customer.gstin?.trim() || "",
+        creditLimit: Number(customer.creditLimit) || 0,
+        remarks: customer.remarks?.trim() || "",
+      };
+
+      await axios.put(
+        `https://cold-storage-system.onrender.com/api/customers/update/${id}`,
+        payload
+      );
+
+      MySwal.fire("✅ Success", "Customer updated successfully", "success");
+      navigate("/customer-list");
     } catch (error) {
-      console.error('Error updating customer:', error);
-      MySwal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: error.response?.data?.message || 'Failed to update customer',
-        confirmButtonColor: '#0369a1'
-      });
+      console.error("❌ Update Error:", error.response?.data || error.message);
+      MySwal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to update customer",
+        "error"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -83,7 +109,9 @@ const EditCustomer = () => {
       <Layout>
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div>
-          <span className="ml-4 text-lg text-gray-600">Loading customer details...</span>
+          <span className="ml-4 text-lg text-gray-600">
+            Loading customer details...
+          </span>
         </div>
       </Layout>
     );
@@ -93,7 +121,6 @@ const EditCustomer = () => {
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 sm:p-6">
         <div className="max-w-2xl mx-auto">
-          {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
               ✏️ Edit Customer
@@ -101,10 +128,11 @@ const EditCustomer = () => {
             <p className="text-gray-600">Update customer information</p>
           </div>
 
-          {/* Form */}
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             <div className="p-6 sm:p-8 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
-              <h2 className="text-2xl font-bold text-white">Customer Details</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Customer Details
+              </h2>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
@@ -118,8 +146,7 @@ const EditCustomer = () => {
                   name="name"
                   value={customer.name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter customer name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
                   required
                 />
               </div>
@@ -134,10 +161,9 @@ const EditCustomer = () => {
                   name="phone"
                   value={customer.phone}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter 10-digit phone number"
-                  pattern="[0-9]{10}"
-                  maxLength="10"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+                  pattern="[0-9]{10,15}"
+                  maxLength="15"
                   required
                 />
               </div>
@@ -145,52 +171,115 @@ const EditCustomer = () => {
               {/* Email */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  📧 Email Address *
+                  📧 Email Address
                 </label>
                 <input
                   type="email"
                   name="email"
                   value={customer.email}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter email address"
-                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
                 />
               </div>
 
               {/* Address */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  📍 Address *
+                  📍 Address
                 </label>
                 <textarea
                   name="address"
                   value={customer.address}
                   onChange={handleInputChange}
                   rows="3"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                  placeholder="Enter complete address"
-                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
                 />
               </div>
 
-              {/* Buttons */}
+              {/* City */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  🏙️ City
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={customer.city}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+                />
+              </div>
+
+              {/* State */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  🏠 State
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  value={customer.state}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+                />
+              </div>
+
+              {/* GSTIN */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  🧾 GSTIN
+                </label>
+                <input
+                  type="text"
+                  name="gstin"
+                  value={customer.gstin}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+                />
+              </div>
+
+              {/* Credit Limit */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  💰 Credit Limit
+                </label>
+                <input
+                  type="number"
+                  name="creditLimit"
+                  value={customer.creditLimit}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+                />
+              </div>
+
+              {/* Remarks */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  📝 Remarks
+                </label>
+                <textarea
+                  name="remarks"
+                  value={customer.remarks}
+                  onChange={handleInputChange}
+                  rows="3"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+                />
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <button
                   type="button"
-                  onClick={() => navigate('/customer-list')}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  onClick={() => navigate("/customer-list")}
+                  className="flex-1 bg-gray-500 text-white py-3 px-6 rounded-xl"
                 >
                   ← Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl ${
-                    submitting ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-xl"
                 >
-                  {submitting ? '⏳ Updating...' : '✅ Update Customer'}
+                  {submitting ? "⏳ Updating..." : "✅ Update Customer"}
                 </button>
               </div>
             </form>

@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const customerSchema = new mongoose.Schema({
@@ -25,6 +24,7 @@ const customerSchema = new mongoose.Schema({
     lowercase: true,
     validate: {
       validator: function(v) {
+        // empty bhi allow hai
         return !v || /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(v);
       },
       message: 'Please enter a valid email address'
@@ -51,6 +51,7 @@ const customerSchema = new mongoose.Schema({
     uppercase: true,
     validate: {
       validator: function(v) {
+        // ✅ empty allowed OR valid GSTIN
         return !v || /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(v);
       },
       message: 'Please enter a valid GSTIN'
@@ -70,7 +71,7 @@ const customerSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Create unique index on phone number
+// unique phone
 customerSchema.index({ phone: 1 }, { unique: true });
 
 module.exports = mongoose.model('Customer', customerSchema);
