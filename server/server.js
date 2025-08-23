@@ -19,7 +19,7 @@ const app = express();
 // ✅ Allow frontend (local + deployed) to access backend
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://cold-storage-system-1ss.onrender.com/",
+  "https://cold-storage-system-1ss.onrender.com",
 ];
 
 app.use(
