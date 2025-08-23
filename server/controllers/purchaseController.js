@@ -331,6 +331,65 @@ exports.deletePurchase = async (req, res) => {
   }
 };
 
+// Get field suggestions for auto-fill
+exports.getFieldSuggestions = async (req, res) => {
+  try {
+    const { field, farmerId } = req.query;
+    
+    console.log("Suggestions request received:", { field, farmerId });
+    
+    if (!field) {
+      return res.status(400).json({
+        success: false,
+        message: "Field parameter is required"
+      });
+    }
+
+    // Validate that the field is one of the allowed fields
+    const allowedFields = ['coldStorage', 'vehicleNo', 'lotNo', 'transport'];
+    if (!allowedFields.includes(field)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid field parameter. Allowed fields: coldStorage, vehicleNo, lotNo, transport"
+      });
+    }
+
+    let query = {};
+    if (farmerId) {
+      // Validate farmerId is a valid ObjectId
+      if (!mongoose.Types.ObjectId.isValid(farmerId)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid farmer ID format"
+        });
+      }
+      query.farmerId = farmerId;
+    }
+
+    console.log("Database query:", query);
+
+    // Get distinct values for the requested field
+    const suggestions = await Purchase.find(query)
+      .distinct(field)
+      .sort();
+
+    console.log("Suggestions found:", suggestions);
+
+    res.status(200).json({
+      success: true,
+      field,
+      suggestions: suggestions.filter(s => s && s.trim() !== '')
+    });
+  } catch (error) {
+    console.error("Error fetching field suggestions:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching suggestions",
+      error: error.message,
+    });
+  }
+};
+
 // Get purchase report
 exports.getPurchaseReport = async (req, res) => {
   try {

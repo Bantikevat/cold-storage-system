@@ -17,11 +17,6 @@ const EditCustomer = () => {
     phone: "",
     email: "",
     address: "",
-    city: "",
-    state: "",
-    gstin: "",
-    creditLimit: "",
-    remarks: ""
   });
 
   useEffect(() => {
@@ -40,11 +35,6 @@ const EditCustomer = () => {
         phone: response.data.phone || "",
         email: response.data.email || "",
         address: response.data.address || "",
-        city: response.data.city || "",
-        state: response.data.state || "",
-        gstin: response.data.gstin || "",
-        creditLimit: response.data.creditLimit || "",
-        remarks: response.data.remarks || ""
       });
     } catch (error) {
       console.error("Error fetching customer:", error);
@@ -78,15 +68,10 @@ const EditCustomer = () => {
         phone: customer.phone ? customer.phone.replace(/\D/g, "") : "",
         email: customer.email?.trim() || "",
         address: customer.address?.trim() || "",
-        city: customer.city?.trim() || "",
-        state: customer.state?.trim() || "",
-        gstin: customer.gstin?.trim() || "",
-        creditLimit: Number(customer.creditLimit) || 0,
-        remarks: customer.remarks?.trim() || "",
       };
 
       await axios.put(
-        `https://cold-storage-system.onrender.com/api/customers/update/${id}`,
+        `https://cold-storage-system.onrender.com/api/customers/${id}`,
         payload
       );
 
@@ -190,76 +175,6 @@ const EditCustomer = () => {
                 <textarea
                   name="address"
                   value={customer.address}
-                  onChange={handleInputChange}
-                  rows="3"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
-                />
-              </div>
-
-              {/* City */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  🏙️ City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={customer.city}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
-                />
-              </div>
-
-              {/* State */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  🏠 State
-                </label>
-                <input
-                  type="text"
-                  name="state"
-                  value={customer.state}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
-                />
-              </div>
-
-              {/* GSTIN */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  🧾 GSTIN
-                </label>
-                <input
-                  type="text"
-                  name="gstin"
-                  value={customer.gstin}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
-                />
-              </div>
-
-              {/* Credit Limit */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  💰 Credit Limit
-                </label>
-                <input
-                  type="number"
-                  name="creditLimit"
-                  value={customer.creditLimit}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl"
-                />
-              </div>
-
-              {/* Remarks */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  📝 Remarks
-                </label>
-                <textarea
-                  name="remarks"
-                  value={customer.remarks}
                   onChange={handleInputChange}
                   rows="3"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl"

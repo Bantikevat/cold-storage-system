@@ -138,7 +138,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               📊 Dashboard
             </NavLink>
             <NavLink
-              to="/add-purchase"
+              to="/purchase-entry"
               className={({ isActive }) =>
                 `hover:translate-x-1 transition hover:text-green-400 px-3 py-1.5 rounded-lg flex items-center ${
                   isActive ? "text-green-500 font-medium bg-green-900/30" : ""

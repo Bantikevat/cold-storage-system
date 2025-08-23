@@ -25,10 +25,6 @@ const PurchaseList = () => {
   const [toDate, setToDate] = useState("");
   const [selectedFarmer, setSelectedFarmer] = useState("");
   const [selectedQuality, setSelectedQuality] = useState("");
-  const [selectedColdStorage, setSelectedColdStorage] = useState("");
-  const [selectedVehicleNo, setSelectedVehicleNo] = useState("");
-  const [selectedLotNo, setSelectedLotNo] = useState("");
-  const [selectedTransport, setSelectedTransport] = useState("");
   const [farmers, setFarmers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -58,10 +54,6 @@ const PurchaseList = () => {
     toDate,
     selectedFarmer,
     selectedQuality,
-    selectedColdStorage,
-    selectedVehicleNo,
-    selectedLotNo,
-    selectedTransport,
   ]); // Re-fetch on filter/pagination/sort changes
 
   const fetchPurchases = async () => {
@@ -72,19 +64,15 @@ const PurchaseList = () => {
         `https://cold-storage-system.onrender.com/api/purchases/all`,
         {
           params: {
-            page,
-            limit,
-            sortBy,
-            sortOrder,
+            page: page,
+            limit: limit,
+            sortBy: sortBy,
+            sortOrder: sortOrder,
             search: searchQuery,
             farmerId: selectedFarmer,
             quality: selectedQuality,
-            coldStorage: selectedColdStorage,
-            vehicleNo: selectedVehicleNo,
-            lotNo: selectedLotNo,
-            transport: selectedTransport,
-            fromDate,
-            toDate,
+            fromDate: fromDate,
+            toDate: toDate,
           },
         }
       );
@@ -195,7 +183,7 @@ const PurchaseList = () => {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6 bg-white p-4 rounded shadow">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6 bg-white p-4 rounded shadow">
           <div>
             <label
               htmlFor="fromDate"
@@ -237,7 +225,7 @@ const PurchaseList = () => {
               htmlFor="selectedFarmer"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Farmer:
+              Select Farmer:
             </label>
             <select
               id="selectedFarmer"
@@ -261,7 +249,7 @@ const PurchaseList = () => {
               htmlFor="selectedQuality"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Quality:
+              Select Quality:
             </label>
             <select
               id="selectedQuality"
@@ -279,83 +267,7 @@ const PurchaseList = () => {
               <option value="Other">Other</option>
             </select>
           </div>
-          <div>
-            <label
-              htmlFor="selectedColdStorage"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Cold Storage:
-            </label>
-            <input
-              type="text"
-              id="selectedColdStorage"
-              placeholder="Cold Storage"
-              value={selectedColdStorage}
-              onChange={(e) => {
-                setSelectedColdStorage(e.target.value);
-                setPage(1);
-              }}
-              className="border p-2 rounded w-full"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="selectedVehicleNo"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Vehicle No:
-            </label>
-            <input
-              type="text"
-              id="selectedVehicleNo"
-              placeholder="Vehicle No"
-              value={selectedVehicleNo}
-              onChange={(e) => {
-                setSelectedVehicleNo(e.target.value);
-                setPage(1);
-              }}
-              className="border p-2 rounded w-full"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="selectedLotNo"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Lot No:
-            </label>
-            <input
-              type="text"
-              id="selectedLotNo"
-              placeholder="Lot No"
-              value={selectedLotNo}
-              onChange={(e) => {
-                setSelectedLotNo(e.target.value);
-                setPage(1);
-              }}
-              className="border p-2 rounded w-full"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="selectedTransport"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Transport:
-            </label>
-            <input
-              type="text"
-              id="selectedTransport"
-              placeholder="Transport"
-              value={selectedTransport}
-              onChange={(e) => {
-                setSelectedTransport(e.target.value);
-                setPage(1);
-              }}
-              className="border p-2 rounded w-full"
-            />
-          </div>
-          <div className="flex items-end gap-2 col-span-2">
+          <div className="flex items-end gap-2">
             <button
               onClick={handleExport}
               className="bg-green-600 text-white px-2 py-2 rounded hover:bg-green-600 w-full"
@@ -480,40 +392,16 @@ const PurchaseList = () => {
                           {item.farmerId?.name || "N/A"}
                         </td>
                         <td className="p-3 whitespace-nowrap">
-                          {item.coldStorage ? (
-                            item.coldStorage
-                          ) : (
-                            <span className="text-red-500 font-medium">
-                              — (Required)
-                            </span>
-                          )}
+                          {item.coldStorage || "—"}
                         </td>
                         <td className="p-3 whitespace-nowrap">
-                          {item.vehicleNo ? (
-                            item.vehicleNo
-                          ) : (
-                            <span className="text-red-500 font-medium">
-                              — (Required)
-                            </span>
-                          )}
+                          {item.vehicleNo || "—"}
                         </td>
                         <td className="p-3 whitespace-nowrap">
-                          {item.lotNo ? (
-                            item.lotNo
-                          ) : (
-                            <span className="text-red-500 font-medium">
-                              — (Required)
-                            </span>
-                          )}
+                          {item.lotNo || "—"}
                         </td>
                         <td className="p-3 whitespace-nowrap">
-                          {item.transport ? (
-                            item.transport
-                          ) : (
-                            <span className="text-red-500 font-medium">
-                              — (Required)
-                            </span>
-                          )}
+                          {item.transport || "—"}
                         </td>
                         <td className="p-3 whitespace-nowrap">
                           {item.variety}
@@ -565,12 +453,12 @@ const PurchaseList = () => {
                     ))
                   ) : (
                     <tr>
-                      <td
-                        colSpan="15"
-                        className="p-4 text-center text-gray-500"
-                      >
-                        No purchases found
-                      </td>
+                        <td
+                          colSpan="15"
+                          className="p-4 text-center text-gray-500"
+                        >
+                          No purchases found
+                        </td>
                     </tr>
                   )}
                 </tbody>

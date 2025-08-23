@@ -23,9 +23,7 @@ const CustomerList = () => {
         customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.phone?.includes(searchTerm) ||
         customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.gstin?.toLowerCase().includes(searchTerm.toLowerCase())
+        customer.address?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredCustomers(filtered);
   }, [customers, searchTerm]);
@@ -63,7 +61,7 @@ const CustomerList = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(
-          `https://cold-storage-system.onrender.com/api/customers/delete/${customerId}`
+          `https://cold-storage-system.onrender.com/api/customers/${customerId}`
         );
         MySwal.fire("Deleted!", "Customer has been deleted.", "success");
         fetchCustomers();
@@ -114,7 +112,7 @@ const CustomerList = () => {
               <div className="relative flex-1 max-w-md">
                 <input
                   type="text"
-                  placeholder="Search customers by name, phone, email, city, state, GSTIN..."
+                  placeholder="Search customers by name, phone, email, or address..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -149,11 +147,7 @@ const CustomerList = () => {
                       <th className="p-3">Name</th>
                       <th className="p-3">Phone</th>
                       <th className="p-3">Email</th>
-                      <th className="p-3">City</th>
-                      <th className="p-3">State</th>
-                      <th className="p-3">GSTIN</th>
-                      <th className="p-3">Credit Limit</th>
-                      <th className="p-3">Remarks</th>
+                      <th className="p-3">Address</th>
                       <th className="p-3">Added Date</th>
                       <th className="p-3">Actions</th>
                     </tr>
@@ -168,12 +162,8 @@ const CustomerList = () => {
                         <td className="p-3 font-medium">{customer.name}</td>
                         <td className="p-3">{customer.phone}</td>
                         <td className="p-3">{customer.email}</td>
-                        <td className="p-3">{customer.city}</td>
-                        <td className="p-3">{customer.state}</td>
-                        <td className="p-3">{customer.gstin}</td>
-                        <td className="p-3">₹{customer.creditLimit || 0}</td>
-                        <td className="p-3 max-w-[150px] truncate">
-                          {customer.remarks}
+                        <td className="p-3 max-w-[200px] truncate">
+                          {customer.address}
                         </td>
                         <td className="p-3">
                           {new Date(customer.createdAt).toLocaleDateString(

@@ -1,20 +1,22 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const customerController = require("../controllers/customerController");
+const customerController = require('../controllers/customerController');
 
-// Add Customer
-router.post("/add", customerController.addCustomer);
+// @route   POST api/customers/add
+// @desc    Add a new customer
+// @access  Public (for now, can be protected later)
+router.post('/add', customerController.addCustomer);
 
 // Get All Customers
-router.get("/all", customerController.getAllCustomers);
+router.get('/all', customerController.getAllCustomers);
 
 // Get Customer by ID
-router.get("/:id", customerController.getCustomerById);
+router.get('/:id', customerController.getCustomerById);
 
 // Update Customer
-router.put("/:id", customerController.updateCustomer);
+router.put('/:id', customerController.updateCustomer);
 
 // Delete Customer
-router.delete("/:id", customerController.deleteCustomer);
+router.delete('/:id', customerController.deleteCustomer);
 
 module.exports = router;
