@@ -59,7 +59,7 @@ const AddCustomer = () => {
       console.log("Sending customer data:", customerData);
 
       const response = await axios.post(
-        "https://cold-storage-system.onrender.com/api/customers/add",
+        "https://cold-storage-system-1s.onrender.com/api/customers/add",
         customerData
       );
 

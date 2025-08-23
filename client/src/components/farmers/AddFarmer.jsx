@@ -31,7 +31,7 @@ const AddFarmer = () => {
     setNotification({ show: false, type: '', message: '' }); // Clear previous notifications
     
     try {
-      const res = await axios.post("https://cold-storage-system.onrender.com/api/farmers/add", formData); // Using axios
+      const res = await axios.post("https://cold-storage-system-1s.onrender.com/api/farmers/add", formData); // Using axios
       
       if (res.status === 201) { // Check for 201 Created status
         setNotification({ 

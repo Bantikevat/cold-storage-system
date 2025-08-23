@@ -95,7 +95,7 @@ const OTPVerify = () => {
     try {
       setLoading(true); // Set loading state for the button
       // Send OTP and admin email for verification
-      const res = await axios.post('https://cold-storage-system.onrender.com/api/otp/verify-otp', { otp: otpToVerify, email: email });
+      const res = await axios.post('https://cold-storage-system-1s.onrender.com/api/otp/verify-otp', { otp: otpToVerify, email: email });
       if (res.data.verified) {
         navigate('/dashboard'); // Navigate to dashboard on successful verification
       } else {
@@ -122,7 +122,7 @@ const OTPVerify = () => {
 
     try {
       // Send OTP request again
-      await axios.post('https://cold-storage-system.onrender.com/api/otp/send-otp', { email });
+      await axios.post('https://cold-storage-system-1s.onrender.com/api/otp/send-otp', { email });
       setTimer(60); // Start the timer again for the next resend
       setShowResentMsg(true); // Show "OTP has been resent" message
       // Hide the message after 4 seconds

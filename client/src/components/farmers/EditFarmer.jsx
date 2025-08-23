@@ -24,7 +24,7 @@ const EditFarmer = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await axios.get(`https://cold-storage-system.onrender.com/api/farmers/${id}`);
+        const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/farmers/${id}`);
         setFormData(res.data);
       } catch (err) {
         console.error('Error fetching farmer:', err.message);
@@ -45,7 +45,7 @@ const EditFarmer = () => {
     setSubmitting(true);
     setError('');
     try {
-      await axios.put(`https://cold-storage-system.onrender.com/api/farmers/update/${id}`, formData);
+      await axios.put(`https://cold-storage-system-1s.onrender.com/api/farmers/update/${id}`, formData);
       MySwal.fire('Updated!', 'Farmer details updated successfully.', 'success');
       navigate('/farmers'); // Navigate back to farmer list
     } catch (err) {

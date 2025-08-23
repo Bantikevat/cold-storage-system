@@ -74,13 +74,13 @@ const EditPurchase = () => {
       try {
         // Fetch farmers list
         const farmersRes = await axios.get(
-          "https://cold-storage-system.onrender.com/api/farmers/all?limit=1000"
+          "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
         );
         setFarmers(farmersRes.data.farmers);
 
         // Fetch purchase details
         const purchaseRes = await axios.get(
-          `https://cold-storage-system.onrender.com/api/purchases/${id}`
+          `https://cold-storage-system-1s.onrender.com/api/purchases/${id}`
         );
         const purchaseData = purchaseRes.data.purchase;
 
@@ -188,7 +188,7 @@ const EditPurchase = () => {
 
     try {
       await axios.put(
-        `https://cold-storage-system.onrender.com/api/purchases/${id}`,
+        `https://cold-storage-system-1s.onrender.com/api/purchases/${id}`,
         payload
       );
       MySwal.fire({

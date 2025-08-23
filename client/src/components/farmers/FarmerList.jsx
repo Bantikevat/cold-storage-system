@@ -35,7 +35,7 @@ const FarmerList = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get(`https://cold-storage-system.onrender.com/api/farmers/all`, {
+      const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/farmers/all`, {
         params: {
           page: currentPage,
           limit: farmersPerPage,
@@ -72,7 +72,7 @@ const FarmerList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`https://cold-storage-system.onrender.com/api/farmers/delete/${id}`);
+        await axios.delete(`https://cold-storage-system-1s.onrender.com/api/farmers/delete/${id}`);
         MySwal.fire('Deleted!', 'The farmer has been deleted.', 'success');
         fetchFarmers();
       } catch (err) {

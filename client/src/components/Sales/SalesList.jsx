@@ -34,7 +34,7 @@ const SalesList = () => {
   const fetchSales = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`https://cold-storage-system.onrender.com/api/sales/all?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${sortOrder}`);
+      const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/sales/all?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${sortOrder}`);
       const salesData = res.data.sales || [];
       
       const formatted = salesData.map((s) => ({
@@ -109,7 +109,7 @@ const SalesList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`https://cold-storage-system.onrender.com/api/sales/${id}`);
+        await axios.delete(`https://cold-storage-system-1s.onrender.com/api/sales/${id}`);
         setSales((prev) => prev.filter((s) => s._id !== id));
         MySwal.fire('Deleted!', 'Sale has been deleted successfully.', 'success');
         fetchSales(); // Refresh data

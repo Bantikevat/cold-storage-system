@@ -34,7 +34,7 @@ const FarmerLedger = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get(`https://cold-storage-system.onrender.com/api/farmers/ledger/${farmerId}`, {
+      const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/farmers/ledger/${farmerId}`, {
         params: { from: fromDate, to: toDate }
       });
       setLedger(res.data);

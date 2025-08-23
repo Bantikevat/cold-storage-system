@@ -81,7 +81,7 @@ const AddPurchase = () => {
     const fetchFarmers = async () => {
       try {
         const res = await axios.get(
-          "https://cold-storage-system.onrender.com/api/farmers/all?limit=1000"
+          "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
         );
         setFarmers(res.data.farmers);
       } catch (err) {
@@ -164,7 +164,7 @@ const AddPurchase = () => {
 
     try {
       await axios.post(
-        "https://cold-storage-system.onrender.com/api/purchases/",
+        "https://cold-storage-system-1s.onrender.com/api/purchases/",
         payload
       );
       MySwal.fire({

@@ -27,7 +27,7 @@ const ReportPage = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('https://cold-storage-system.onrender.com/api/purchases/report', {
+      const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/purchases/report', {
         params: {
           fromDate,
           toDate,

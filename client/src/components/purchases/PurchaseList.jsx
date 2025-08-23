@@ -69,7 +69,7 @@ const PurchaseList = () => {
     setError("");
     try {
       const res = await axios.get(
-        `https://cold-storage-system.onrender.com/api/purchases/all`,
+        `https://cold-storage-system-1s.onrender.com/api/purchases/all`,
         {
           params: {
             page,
@@ -102,7 +102,7 @@ const PurchaseList = () => {
   const fetchFarmers = async () => {
     try {
       const res = await axios.get(
-        "https://cold-storage-system.onrender.com/api/farmers/all?limit=1000"
+        "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
       ); // Fetch all farmers for filter dropdown
       setFarmers(res.data.farmers);
     } catch (err) {
@@ -147,7 +147,7 @@ const PurchaseList = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(
-          `https://cold-storage-system.onrender.com/api/purchases/${id}`
+          `https://cold-storage-system-1s.onrender.com/api/purchases/${id}`
         );
         MySwal.fire("Deleted!", "Purchase has been deleted.", "success");
         fetchPurchases(); // Refresh the list

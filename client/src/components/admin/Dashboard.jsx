@@ -24,25 +24,25 @@ const CompleteDashboard = () => {
 
       // Fetch farmers data
       const farmersRes = await axios.get(
-        "https://cold-storage-system.onrender.com/api/farmers/all?limit=1000"
+        "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
       );
       const farmers = farmersRes.data.farmers || [];
 
       // Fetch purchases data
       const purchasesRes = await axios.get(
-        "https://cold-storage-system.onrender.com/api/purchases/all?limit=1000"
+        "https://cold-storage-system-1s.onrender.com/api/purchases/all?limit=1000"
       );
       const purchases = purchasesRes.data.purchases || [];
 
       // Fetch sales data
       const salesRes = await axios.get(
-        "https://cold-storage-system.onrender.com/api/sales/all?limit=1000"
+        "https://cold-storage-system-1s.onrender.com/api/sales/all?limit=1000"
       );
       const sales = salesRes.data.sales || [];
 
       // Fetch customers data
       const customersRes = await axios.get(
-        "https://cold-storage-system.onrender.com/api/customers/all?limit=1000"
+        "https://cold-storage-system-1s.onrender.com/api/customers/all?limit=1000"
       );
       const customers = customersRes.data.customers || [];
 

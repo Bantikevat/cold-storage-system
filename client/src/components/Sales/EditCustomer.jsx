@@ -26,7 +26,7 @@ const EditCustomer = () => {
   const fetchCustomer = async () => {
     try {
       const response = await axios.get(
-        `https://cold-storage-system.onrender.com/api/customers/${id}`
+        `https://cold-storage-system-1s.onrender.com/api/customers/${id}`
       );
 
       // ✅ Default values fix
@@ -71,7 +71,7 @@ const EditCustomer = () => {
       };
 
       await axios.put(
-        `https://cold-storage-system.onrender.com/api/customers/${id}`,
+        `https://cold-storage-system-1s.onrender.com/api/customers/${id}`,
         payload
       );
 

@@ -19,7 +19,7 @@ const SalesInvoice = () => {
   useEffect(() => {
     const fetchSale = async () => {
       try {
-        const res = await axios.get(`https://cold-storage-system.onrender.com/api/sales/${id}`);
+        const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/sales/${id}`);
         console.log('✅ Sales Invoice Data:', res.data);
         setSale(res.data);
       } catch (err) {

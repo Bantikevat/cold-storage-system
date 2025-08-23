@@ -31,7 +31,7 @@ const CustomerList = () => {
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(
-        "https://cold-storage-system.onrender.com/api/customers/all"
+        "https://cold-storage-system-1s.onrender.com/api/customers/all"
       );
       setCustomers(response.data);
     } catch (error) {
@@ -61,7 +61,7 @@ const CustomerList = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(
-          `https://cold-storage-system.onrender.com/api/customers/${customerId}`
+          `https://cold-storage-system-1s.onrender.com/api/customers/${customerId}`
         );
         MySwal.fire("Deleted!", "Customer has been deleted.", "success");
         fetchCustomers();

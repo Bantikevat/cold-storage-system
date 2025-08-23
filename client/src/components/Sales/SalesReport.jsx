@@ -14,7 +14,7 @@ const SalesReport = () => {
   // ✅ Fetch Customers
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get('https://cold-storage-system.onrender.com/api/customers/all');
+      const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/customers/all');
       console.log("Fetched Customers:", res.data);
       setCustomerList(res.data);
     } catch (err) {
@@ -25,7 +25,7 @@ const SalesReport = () => {
   // ✅ Fetch Sales Report
   const fetchReport = async () => {
     try {
-      const res = await axios.get('https://cold-storage-system.onrender.com/api/sales/report', {
+      const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/sales/report', {
         params: {
           fromDate,
           toDate,

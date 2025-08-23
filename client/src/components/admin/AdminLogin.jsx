@@ -32,7 +32,7 @@ const AdminLogin = () => {
     try {
       setLoading(true);
       // Send email in the request body
-      await axios.post('https://cold-storage-system.onrender.com/api/otp/send-otp', { email });
+      await axios.post('https://cold-storage-system-1s.onrender.com/api/otp/send-otp', { email });
       localStorage.setItem('adminEmail', email); // Store email for OTP verification
       navigate('/otp'); // Navigate to OTP verification page
     } catch (err) {
