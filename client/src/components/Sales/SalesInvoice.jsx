@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import API_ENDPOINTS from '../../config/api';
 
 const MySwal = withReactContent(Swal);
 
@@ -19,7 +20,7 @@ const SalesInvoice = () => {
   useEffect(() => {
     const fetchSale = async () => {
       try {
-        const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/sales/${id}`);
+        const res = await axios.get(`${API_ENDPOINTS.SALES_DELETE}/${id}`);
         console.log('✅ Sales Invoice Data:', res.data);
         setSale(res.data);
       } catch (err) {

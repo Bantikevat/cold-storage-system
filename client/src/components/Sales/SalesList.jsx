@@ -7,6 +7,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Layout from '../layout/Layout';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import API_ENDPOINTS from '../../config/api';
 
 const MySwal = withReactContent(Swal);
 
@@ -34,7 +35,14 @@ const SalesList = () => {
   const fetchSales = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/sales/all?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${sortOrder}`);
+      const res = await axios.get(API_ENDPOINTS.SALES_ALL, {
+        params: {
+          page,
+          limit,
+          sortBy,
+          order: sortOrder
+        }
+      });
       const salesData = res.data.sales || [];
       
       const formatted = salesData.map((s) => ({
@@ -109,7 +117,7 @@ const SalesList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`https://cold-storage-system-1s.onrender.com/api/sales/${id}`);
+        await axios.delete(`${API_ENDPOINTS.SALES_DELETE}/${id}`);
         setSales((prev) => prev.filter((s) => s._id !== id));
         MySwal.fire('Deleted!', 'Sale has been deleted successfully.', 'success');
         fetchSales(); // Refresh data

@@ -7,6 +7,7 @@ const farmerController = require("../controllers/farmerController"); // Adjust p
 router.post("/add", farmerController.addFarmer);
 
 // Route to get all farmers (now handles pagination, sorting, searching via query params)
+router.get("/", farmerController.getAllFarmers);
 router.get("/all", farmerController.getAllFarmers);
 
 // Route to get a single farmer by ID

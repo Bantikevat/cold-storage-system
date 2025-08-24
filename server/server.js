@@ -1,13 +1,17 @@
 const dotenv = require("dotenv");
-dotenv.config(); // ✅ Load environment variables at the very top
+const path = require("path");
+dotenv.config({ path: path.resolve(__dirname, ".env") }); // ✅ Load environment variables at the very top
 
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const connectDB = require("./config/db");
 
-// Import routes
-const farmerRoutes = require("./routes/farmerRoutes");
+// Use local database for development to avoid MongoDB Atlas IP whitelisting issues
+console.log("⚠️  Using local database connection for development");
+const connectDB = require("./config/db.local");
+
+const stockRoutes = require("./routes/stockRoutes"); // Import stock routes
+const farmerRoutes = require("./routes/farmerRoutes"); 
 const purchaseRoutes = require("./routes/purchaseRoutes");
 const salesRoutes = require("./routes/salesRoutes");
 const customerRoutes = require("./routes/customerRoutes");
@@ -48,17 +52,35 @@ app.use("/api/farmers", farmerRoutes);
 app.use("/api/purchases", purchaseRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/customers", customerRoutes);
+app.use("/api/stock", stockRoutes); // Add stock routes
 
 // ✅ Error handling (last middleware)
 app.use((err, req, res, next) => {
   console.error("Server Error:", err.stack);
+
+  // Improve Mongoose validation error handling
+  if (err.name === "ValidationError") {
+    const messages = Object.values(err.errors).map((val) => val.message);
+    return res.status(400).json({
+      success: false,
+      message: messages,
+    });
+  }
+
   if (res.headersSent) {
     return next(err);
   }
+
   res
     .status(err.status || 500)
     .json({ error: err.message || "Something went wrong!" });
 });
+
+// ✅ Check for JWT secret
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️  JWT_SECRET environment variable not set. Using fallback secret for development.');
+  process.env.JWT_SECRET = 'fallback_secret_key_for_development_only';
+}
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;

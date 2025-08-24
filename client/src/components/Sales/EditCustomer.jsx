@@ -4,6 +4,7 @@ import axios from "axios";
 import Layout from "../layout/Layout";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import API_ENDPOINTS from "../../config/api";
 
 const MySwal = withReactContent(Swal);
 
@@ -25,9 +26,7 @@ const EditCustomer = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get(
-        `https://cold-storage-system-1s.onrender.com/api/customers/${id}`
-      );
+      const response = await axios.get(`${API_ENDPOINTS.CUSTOMERS}/${id}`);
 
       // ✅ Default values fix
       setCustomer({
@@ -70,10 +69,7 @@ const EditCustomer = () => {
         address: customer.address?.trim() || "",
       };
 
-      await axios.put(
-        `https://cold-storage-system-1s.onrender.com/api/customers/${id}`,
-        payload
-      );
+      await axios.put(`${API_ENDPOINTS.CUSTOMERS}/${id}`, payload);
 
       MySwal.fire("✅ Success", "Customer updated successfully", "success");
       navigate("/customer-list");

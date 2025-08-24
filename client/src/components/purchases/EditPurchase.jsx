@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../layout/Layout";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import API_ENDPOINTS from "../../config/api";
 
 const MySwal = withReactContent(Swal);
 
@@ -29,10 +30,20 @@ const EditPurchase = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState({
-    coldStorage: ["KT Cold Storage", "ABC Cold Storage", "XYZ Cold Storage", "Premium Cold Storage"],
+    coldStorage: [
+      "KT Cold Storage",
+      "ABC Cold Storage",
+      "XYZ Cold Storage",
+      "Premium Cold Storage",
+    ],
     vehicleNo: ["UP32AB1234", "UP32CD5678", "UP32EF9012", "UP32GH3456"],
     lotNo: ["LOT001", "LOT002", "LOT003", "LOT004", "LOT005"],
-    transport: ["ABC Transport", "XYZ Logistics", "Premium Transport", "Fast Delivery"],
+    transport: [
+      "ABC Transport",
+      "XYZ Logistics",
+      "Premium Transport",
+      "Fast Delivery",
+    ],
   });
   const [showSuggestions, setShowSuggestions] = useState({
     coldStorage: false,
@@ -74,13 +85,14 @@ const EditPurchase = () => {
       try {
         // Fetch farmers list
         const farmersRes = await axios.get(
-          "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
+          API_ENDPOINTS.FARMERS_ALL,
+          { params: { limit: 1000 } }
         );
         setFarmers(farmersRes.data.farmers);
 
         // Fetch purchase details
         const purchaseRes = await axios.get(
-          `https://cold-storage-system-1s.onrender.com/api/purchases/${id}`
+          `${API_ENDPOINTS.PURCHASES}/${id}`
         );
         const purchaseData = purchaseRes.data.purchase;
 
@@ -188,7 +200,7 @@ const EditPurchase = () => {
 
     try {
       await axios.put(
-        `https://cold-storage-system-1s.onrender.com/api/purchases/${id}`,
+        `${API_ENDPOINTS.PURCHASES}/${id}`,
         payload
       );
       MySwal.fire({
@@ -415,24 +427,25 @@ const EditPurchase = () => {
                   required
                   className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 hover:border-gray-300"
                 />
-                {showSuggestions.transport && suggestions.transport.length > 0 && (
-                  <div
-                    ref={suggestionRefs.transport}
-                    className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-                  >
-                    {suggestions.transport.map((suggestion, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-                        onClick={() =>
-                          handleSuggestionClick("transport", suggestion)
-                        }
-                      >
-                        {suggestion}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {showSuggestions.transport &&
+                  suggestions.transport.length > 0 && (
+                    <div
+                      ref={suggestionRefs.transport}
+                      className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                    >
+                      {suggestions.transport.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                          onClick={() =>
+                            handleSuggestionClick("transport", suggestion)
+                          }
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
               </div>
 
               {/* Farmer Selection */}

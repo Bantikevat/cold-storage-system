@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { FaDownload, FaPrint } from 'react-icons/fa';
 import Layout from '../layout/Layout';
+import API_ENDPOINTS from '../../config/api';
 
 const SalesReport = () => {
   const [sales, setSales] = useState([]);
@@ -14,7 +15,7 @@ const SalesReport = () => {
   // ✅ Fetch Customers
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/customers/all');
+      const res = await axios.get(API_ENDPOINTS.CUSTOMERS);
       console.log("Fetched Customers:", res.data);
       setCustomerList(res.data);
     } catch (err) {
@@ -25,7 +26,7 @@ const SalesReport = () => {
   // ✅ Fetch Sales Report
   const fetchReport = async () => {
     try {
-      const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/sales/report', {
+      const res = await axios.get(API_ENDPOINTS.SALES_REPORT, {
         params: {
           fromDate,
           toDate,

@@ -4,6 +4,7 @@ import Layout from "../layout/Layout";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import API_ENDPOINTS from "../../config/api";
 
 const MySwal = withReactContent(Swal);
 
@@ -30,9 +31,7 @@ const CustomerList = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get(
-        "https://cold-storage-system-1s.onrender.com/api/customers/all"
-      );
+      const response = await axios.get(API_ENDPOINTS.CUSTOMERS);
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
@@ -60,9 +59,7 @@ const CustomerList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(
-          `https://cold-storage-system-1s.onrender.com/api/customers/${customerId}`
-        );
+        await axios.delete(`${API_ENDPOINTS.CUSTOMERS}/${customerId}`);
         MySwal.fire("Deleted!", "Customer has been deleted.", "success");
         fetchCustomers();
       } catch (error) {

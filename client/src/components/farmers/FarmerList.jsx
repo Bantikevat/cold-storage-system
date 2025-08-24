@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../layout/Layout';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import API_ENDPOINTS from '../../config/api';
 
 const MySwal = withReactContent(Swal);
 
@@ -35,7 +36,7 @@ const FarmerList = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/farmers/all`, {
+      const res = await axios.get(API_ENDPOINTS.FARMERS, {
         params: {
           page: currentPage,
           limit: farmersPerPage,
@@ -72,7 +73,7 @@ const FarmerList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`https://cold-storage-system-1s.onrender.com/api/farmers/delete/${id}`);
+        await axios.delete(`${API_ENDPOINTS.FARMERS}/${id}`);
         MySwal.fire('Deleted!', 'The farmer has been deleted.', 'success');
         fetchFarmers();
       } catch (err) {

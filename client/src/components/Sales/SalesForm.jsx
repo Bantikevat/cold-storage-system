@@ -5,11 +5,13 @@ import Layout from '../layout/Layout';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import API_ENDPOINTS from '../../config/api';
 
 const MySwal = withReactContent(Swal);
 
 const SalesForm = () => {
   const [customers, setCustomers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [saleData, setSaleData] = useState({
     clientId: '',
     product: '',
@@ -23,24 +25,30 @@ const SalesForm = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Fetch customers
+  // Fetch customers and products
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/customers/all');
-        setCustomers(res.data);
+        // Fetch customers
+        const customersRes = await axios.get(API_ENDPOINTS.CUSTOMERS);
+        setCustomers(customersRes.data);
+
+        // Fetch available products from stock
+        const stockRes = await axios.get(API_ENDPOINTS.STOCK_ALL);
+        const availableProducts = stockRes.data.map(stock => stock.productName);
+        setProducts(availableProducts);
       } catch (err) {
-        console.error('❌ Error fetching customers:', err);
-        setError('Failed to load customers');
+        console.error('❌ Error fetching data:', err);
+        setError('Failed to load data');
         MySwal.fire({
           icon: 'error',
           title: 'Error!',
-          text: 'Failed to load customers',
+          text: 'Failed to load data',
           confirmButtonColor: '#0369a1'
         });
       }
     };
-    fetchCustomers();
+    fetchData();
   }, []);
 
   // Handle input
@@ -101,7 +109,7 @@ const SalesForm = () => {
 
       console.log("🟢 Submitting Sale Data:", payload);
 
-      await axios.post('https://cold-storage-system-1s.onrender.com/api/sales/add', payload);
+      await axios.post(API_ENDPOINTS.SALES_ADD, payload);
       
       MySwal.fire({
         icon: 'success',
@@ -193,20 +201,25 @@ const SalesForm = () => {
                   <div className="bg-purple-50 p-6 rounded-xl border border-purple-200">
                     <h3 className="text-lg font-semibold text-purple-800 mb-4">🌾 Product Information</h3>
                     <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Product Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="product"
-                          value={saleData.product}
-                          onChange={handleChange}
-                          placeholder="Enter product name (e.g., Potato, Onion)"
-                          className="w-full px-4 py-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                          required
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Product Name *
+                      </label>
+                      <select
+                        name="product"
+                        value={saleData.product}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                        required
+                      >
+                        <option value="">Select a product...</option>
+                        {products.map((product, index) => (
+                          <option key={index} value={product}>
+                            {product}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     </div>
                   </div>
                 </div>

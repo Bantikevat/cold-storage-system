@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../layout/Layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import API_ENDPOINTS from "../../config/api";
 
 const CompleteDashboard = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -13,6 +14,7 @@ const CompleteDashboard = () => {
     inventory: { items: 0, lowStock: 0 },
   });
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAllData();
@@ -23,27 +25,19 @@ const CompleteDashboard = () => {
       setLoading(true);
 
       // Fetch farmers data
-      const farmersRes = await axios.get(
-        "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
-      );
+      const farmersRes = await axios.get(`${API_ENDPOINTS.FARMERS}?limit=1000`);
       const farmers = farmersRes.data.farmers || [];
 
       // Fetch purchases data
-      const purchasesRes = await axios.get(
-        "https://cold-storage-system-1s.onrender.com/api/purchases/all?limit=1000"
-      );
+      const purchasesRes = await axios.get(`${API_ENDPOINTS.PURCHASES}?limit=1000`);
       const purchases = purchasesRes.data.purchases || [];
 
       // Fetch sales data
-      const salesRes = await axios.get(
-        "https://cold-storage-system-1s.onrender.com/api/sales/all?limit=1000"
-      );
+      const salesRes = await axios.get(`${API_ENDPOINTS.SALES}?limit=1000`);
       const sales = salesRes.data.sales || [];
 
       // Fetch customers data
-      const customersRes = await axios.get(
-        "https://cold-storage-system-1s.onrender.com/api/customers/all?limit=1000"
-      );
+      const customersRes = await axios.get(`${API_ENDPOINTS.CUSTOMERS}?limit=1000`);
       const customers = customersRes.data.customers || [];
 
       // Calculate totals
@@ -92,6 +86,13 @@ const CompleteDashboard = () => {
     }
   };
 
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('adminEmail');
+    localStorage.removeItem('adminToken');
+    navigate('/');
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -110,15 +111,31 @@ const CompleteDashboard = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8 text-center">
-            <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
-              🏢 Cold Storage Management System
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Complete automation and management dashboard
-            </p>
-            <div className="mt-4 text-sm text-gray-500">
-              Last updated: {new Date().toLocaleString()}
+          <div className="flex justify-between items-center mb-8">
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
+                🏢 Cold Storage Management System
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Complete automation and management dashboard
+              </p>
+              <div className="mt-4 text-sm text-gray-500">
+                Last updated: {new Date().toLocaleString()}
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => navigate('/profile')}
+                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+              >
+                👤 Profile
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition"
+              >
+                🚪 Logout
+              </button>
             </div>
           </div>
 

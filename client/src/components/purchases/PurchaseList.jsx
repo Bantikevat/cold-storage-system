@@ -15,11 +15,13 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../layout/Layout";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import API_ENDPOINTS from "../../config/api"; // Import API endpoints
 
 const MySwal = withReactContent(Swal);
 
 const PurchaseList = () => {
   const [purchases, setPurchases] = useState([]);
+  const [farmers, setFarmers] = useState([]); // Added missing state
   const [searchQuery, setSearchQuery] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -29,7 +31,7 @@ const PurchaseList = () => {
   const [selectedVehicleNo, setSelectedVehicleNo] = useState("");
   const [selectedLotNo, setSelectedLotNo] = useState("");
   const [selectedTransport, setSelectedTransport] = useState("");
-  const [farmers, setFarmers] = useState([]);
+  const [selectedVariety, setSelectedVariety] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -69,7 +71,7 @@ const PurchaseList = () => {
     setError("");
     try {
       const res = await axios.get(
-        `https://cold-storage-system-1s.onrender.com/api/purchases/all`,
+        API_ENDPOINTS.PURCHASES,
         {
           params: {
             page,
@@ -102,7 +104,8 @@ const PurchaseList = () => {
   const fetchFarmers = async () => {
     try {
       const res = await axios.get(
-        "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
+        API_ENDPOINTS.FARMERS,
+        { params: { limit: 1000 } }
       ); // Fetch all farmers for filter dropdown
       setFarmers(res.data.farmers);
     } catch (err) {
@@ -147,7 +150,7 @@ const PurchaseList = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(
-          `https://cold-storage-system-1s.onrender.com/api/purchases/${id}`
+          `${API_ENDPOINTS.PURCHASES}/${id}`
         );
         MySwal.fire("Deleted!", "Purchase has been deleted.", "success");
         fetchPurchases(); // Refresh the list
@@ -273,11 +276,32 @@ const PurchaseList = () => {
               className="border p-2 rounded w-full"
             >
               <option value="">All Quality</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
+              <option value="Premium">Premium</option>
+              <option value="A">Grade A</option>
+              <option value="B">Grade B</option>
+              <option value="C">Grade C</option>
+              <option value="Standard">Standard</option>
               <option value="Other">Other</option>
             </select>
+          </div>
+          <div>
+            <label
+              htmlFor="selectedVariety"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Variety:
+            </label>
+            <input
+              type="text"
+              id="selectedVariety"
+              placeholder="Potato Variety"
+              value={selectedVariety}
+              onChange={(e) => {
+                setSelectedVariety(e.target.value);
+                setPage(1);
+              }}
+              className="border p-2 rounded w-full"
+            />
           </div>
           <div>
             <label

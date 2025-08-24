@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Layout from "../layout/Layout";
 import Swal from "sweetalert2";
+import API_ENDPOINTS from "../../config/api"; // Import API endpoints
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
@@ -40,18 +41,30 @@ const AddPurchase = () => {
       "Premium Transport",
       "Fast Delivery",
     ],
+    variety: [
+      "Kufri Jyoti",
+      "Kufri Pukhraj",
+      "Kufri Chipsona",
+      "Kufri Bahar",
+      "Kufri Sindhuri",
+      "Kufri Lauvkar",
+      "Kufri Chandramukhi",
+      "Local Variety"
+    ],
   });
   const [showSuggestions, setShowSuggestions] = useState({
     coldStorage: false,
     vehicleNo: false,
     lotNo: false,
     transport: false,
+    variety: false,
   });
   const suggestionRefs = {
     coldStorage: useRef(null),
     vehicleNo: useRef(null),
     lotNo: useRef(null),
     transport: useRef(null),
+    variety: useRef(null),
   };
   const navigate = useNavigate();
 
@@ -77,23 +90,22 @@ const AddPurchase = () => {
     };
   }, []);
 
+  const fetchFarmers = async () => {
+    try {
+      const res = await axios.get(API_ENDPOINTS.FARMERS_ALL + "?limit=1000");
+      setFarmers(res.data.farmers);
+    } catch (err) {
+      console.error("Failed to fetch farmers", err);
+      MySwal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to load farmers list.",
+        confirmButtonColor: "#0369a1",
+      });
+    }
+  };
+
   useEffect(() => {
-    const fetchFarmers = async () => {
-      try {
-        const res = await axios.get(
-          "https://cold-storage-system-1s.onrender.com/api/farmers/all?limit=1000"
-        );
-        setFarmers(res.data.farmers);
-      } catch (err) {
-        console.error("Failed to fetch farmers", err);
-        MySwal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to load farmers list.",
-          confirmButtonColor: "#0369a1",
-        });
-      }
-    };
     fetchFarmers();
   }, []);
 
@@ -109,7 +121,7 @@ const AddPurchase = () => {
 
     // Show suggestions when user starts typing in auto-fill fields
     if (
-      ["coldStorage", "vehicleNo", "lotNo", "transport"].includes(name) &&
+      ["coldStorage", "vehicleNo", "lotNo", "transport", "variety"].includes(name) &&
       newValue.length > 0
     ) {
       setShowSuggestions((prev) => ({
@@ -162,11 +174,32 @@ const AddPurchase = () => {
       amount: parseFloat(amount),
     };
 
+    // 🔹 Quick Frontend Validation
+    if (
+      !formData.farmerId ||
+      !formData.coldStorage ||
+      !formData.vehicleNo ||
+      !formData.lotNo ||
+      !formData.transport ||
+      !formData.variety ||
+      !formData.bags ||
+      !formData.weightPerBag ||
+      !formData.ratePerKg
+    ) {
+      MySwal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please fill all required fields before saving!",
+      });
+      setLoading(false);
+      return;
+    }
+
+    console.log("👉 Sending Payload to Backend:", payload); // Debugging log
+
     try {
-      await axios.post(
-        "https://cold-storage-system-1s.onrender.com/api/purchases/",
-        payload
-      );
+      await axios.post(API_ENDPOINTS.PURCHASES, payload);
+
       MySwal.fire({
         icon: "success",
         title: "सफलता!",
@@ -174,6 +207,7 @@ const AddPurchase = () => {
         confirmButtonColor: "#0369a1",
       });
 
+      // Reset Form after save
       setFormData({
         purchaseDate: new Date().toISOString().split("T")[0],
         coldStorage: "",
@@ -191,7 +225,11 @@ const AddPurchase = () => {
 
       navigate("/purchase-list");
     } catch (err) {
-      console.error("Error saving purchase:", err.message);
+      console.error(
+        "❌ Error saving purchase:",
+        err.response?.data || err.message
+      ); // Debugging log
+
       MySwal.fire({
         icon: "error",
         title: "Error",
@@ -325,12 +363,22 @@ const AddPurchase = () => {
 
               {/* Farmer Selection */}
               <div className="group">
-                <label
-                  htmlFor="farmerId"
-                  className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600"
-                >
-                  👨‍🌾 Select Farmer *
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label
+                    htmlFor="farmerId"
+                    className="block text-sm font-semibold text-gray-700 transition-colors group-focus-within:text-blue-600"
+                  >
+                    👨‍🌾 Select Farmer *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={fetchFarmers}
+                    className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center"
+                    title="Refresh farmer list"
+                  >
+                    🔄 Refresh
+                  </button>
+                </div>
                 <select
                   id="farmerId"
                   name="farmerId"
@@ -349,12 +397,12 @@ const AddPurchase = () => {
               </div>
 
               {/* Variety */}
-              <div className="group">
+              <div className="group relative">
                 <label
                   htmlFor="variety"
                   className="block text-sm font-semibold text-gray-700 mb-2 transition-colors group-focus-within:text-blue-600"
                 >
-                  🥔 Variety *
+                  🥔 Potato Variety *
                 </label>
                 <input
                   type="text"
@@ -363,9 +411,30 @@ const AddPurchase = () => {
                   placeholder="e.g., Kufri Jyoti"
                   value={formData.variety}
                   onChange={handleChange}
+                  onFocus={() => handleInputFocus("variety")}
                   required
                   className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 hover:border-gray-300"
                 />
+                {showSuggestions.variety && suggestions.variety.length > 0 && (
+                  <div
+                    ref={suggestionRefs.variety}
+                    className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto"
+                  >
+                    {suggestions.variety
+                      .filter((suggestion) =>
+                        suggestion.toLowerCase().includes(formData.variety.toLowerCase())
+                      )
+                      .map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 cursor-pointer hover:bg-blue-50 transition-colors"
+                          onClick={() => handleSuggestionClick("variety", suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                  </div>
+                )}
               </div>
 
               {/* Quality */}

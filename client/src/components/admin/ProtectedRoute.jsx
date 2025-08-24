@@ -2,7 +2,8 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem('adminEmail'); // ✅ ya token use karo
+  // Check for both email and JWT token for better security
+  const isAuthenticated = !!localStorage.getItem('adminEmail') && !!localStorage.getItem('adminToken');
 
   return isAuthenticated ? children : <Navigate to="/" replace />;
 };

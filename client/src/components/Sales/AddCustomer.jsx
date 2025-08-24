@@ -4,6 +4,7 @@ import Layout from "../layout/Layout";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import API_ENDPOINTS from "../../config/api";
 
 const MySwal = withReactContent(Swal);
 
@@ -58,10 +59,7 @@ const AddCustomer = () => {
     try {
       console.log("Sending customer data:", customerData);
 
-      const response = await axios.post(
-        "https://cold-storage-system-1s.onrender.com/api/customers/add",
-        customerData
-      );
+      const response = await axios.post(API_ENDPOINTS.CUSTOMERS_ADD, customerData);
 
       console.log("Customer added successfully:", response.data);
 

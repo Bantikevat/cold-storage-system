@@ -161,81 +161,28 @@ exports.deleteFarmer = async (req, res) => {
   }
 };
 
-// Get Farmer Ledger
+// Get Farmer Ledger - Temporarily disabled due to missing Payment and Storage models
 exports.getFarmerLedger = async (req, res) => {
   try {
     const { farmerId } = req.params;
-    const { from, to } = req.query; // Date range filters
-
+    
     const farmer = await Farmer.findById(farmerId);
     if (!farmer) {
       return res.status(404).json({ message: 'Farmer not found.' });
     }
 
-    let dateFilter = {};
-    if (from) {
-      dateFilter.$gte = new Date(from);
-    }
-    if (to) {
-      dateFilter.$lte = new Date(new Date(to).setHours(23, 59, 59, 999)); // End of day
-    }
-
-    // Fetch Payments
-    const payments = await Payment.find({
-      farmerId,
-      ...(Object.keys(dateFilter).length > 0 && { date: dateFilter }),
-    }).sort({ date: 1 });
-
-    // Fetch Purchases (assuming a 'purchaseDate' field)
-    const purchases = await Purchase.find({
-      farmerId,
-      ...(Object.keys(dateFilter).length > 0 && { purchaseDate: dateFilter }),
-    }).sort({ purchaseDate: 1 });
-
-    // Fetch Storage Entries (assuming 'storageDate' and 'outDate' fields)
-    // This is more complex as storage rent accrues over time.
-    // For simplicity, we'll just fetch entries. Actual rent calculation might be done on frontend or a separate service.
-    const storageEntries = await Storage.find({
-      farmerId,
-      $or: [ // Check if storageDate or outDate falls within the range
-        ...(Object.keys(dateFilter).length > 0 ? [{ storageDate: dateFilter }] : []),
-        ...(Object.keys(dateFilter).length > 0 ? [{ outDate: dateFilter }] : []),
-        // If no date filter, include all
-        ...(Object.keys(dateFilter).length === 0 ? [{}] : [])
-      ]
-    }).sort({ storageDate: 1 });
-
-    // Calculate summary
-    let totalPaid = 0;
-    payments.forEach(p => { totalPaid += p.amount; });
-
-    let totalPurchase = 0;
-    purchases.forEach(p => { totalPurchase += p.amount; });
-
-    // Simple storage rent calculation for summary (can be more complex)
-    let totalStorageRent = 0;
-    storageEntries.forEach(entry => {
-      const startDate = new Date(entry.storageDate);
-      const endDate = entry.outDate ? new Date(entry.outDate) : new Date(); // If not out, assume current date
-      const diffTime = Math.abs(endDate - startDate);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      totalStorageRent += (entry.quantity || 0) * (entry.rate || 0) * diffDays;
-    });
-
-    // Outstanding calculation (simplified: total owed - total paid)
-    // You might need a more sophisticated ledger balance calculation based on your business logic
-    const outstanding = (totalPurchase + totalStorageRent) - totalPaid;
-
+    // Return basic farmer info with a message that ledger is not implemented
     res.status(200).json({
       farmer,
-      payments,
-      purchases,
-      storageEntries,
+      message: 'Ledger functionality is not fully implemented yet. Payment and Storage models are required.',
+      payments: [],
+      purchases: [],
+      storageEntries: [],
       summary: {
-        totalPaid,
-        totalPurchase,
-        totalStorageRent: parseFloat(totalStorageRent.toFixed(2)), // Format to 2 decimal places
-        outstanding: parseFloat(outstanding.toFixed(2)), // Format to 2 decimal places
+        totalPaid: 0,
+        totalPurchase: 0,
+        totalStorageRent: 0,
+        outstanding: 0,
       },
     });
 

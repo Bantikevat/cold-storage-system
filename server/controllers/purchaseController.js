@@ -1,6 +1,5 @@
 const Purchase = require("../models/Purchase");
 const Farmer = require("../models/Farmer");
-
 const mongoose = require("mongoose");
 
 // Helper function to calculate purchase totals
@@ -45,7 +44,7 @@ exports.addPurchase = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "सभी required fields भरना जरूरी है",
+        message: "All required fields must be filled.",
       });
     }
 
@@ -84,20 +83,6 @@ exports.addPurchase = async (req, res) => {
 
     const savedPurchase = await newPurchase.save();
 
-    // Update stock for the purchased product
-    const stock = await Stock.findOne({ productName: variety });
-    if (stock) {
-      stock.currentStock += totalWeight;
-      await stock.save();
-    } else {
-      const newStock = new Stock({
-        productName: variety,
-        currentStock: totalWeight,
-        minStockAlert: 50,
-      });
-      await newStock.save();
-    }
-
     res.status(201).json({
       success: true,
       message: "Purchase successfully added!",
@@ -133,9 +118,12 @@ exports.getAllPurchases = async (req, res) => {
     // Add filters
     if (farmerId) query.farmerId = farmerId;
     if (quality) query.quality = quality;
-    if (coldStorage) query.coldStorage = { $regex: coldStorage, $options: "i" };
-    if (vehicleNo)
+    if (coldStorage) {
+      query.coldStorage = { $regex: coldStorage, $options: "i" };
+    }
+    if (vehicleNo) {
       query.vehicleNo = { $regex: vehicleNo.toUpperCase(), $options: "i" };
+    }
 
     // Date range filter
     if (fromDate || toDate) {
@@ -144,24 +132,9 @@ exports.getAllPurchases = async (req, res) => {
       if (toDate) query.purchaseDate.$lte = new Date(toDate);
     }
 
-    // Search filter
-    if (search) {
-      const farmers = await Farmer.find({
-        name: { $regex: search, $options: "i" },
-      }).select("_id");
-
-      query.$or = [
-        { variety: { $regex: search, $options: "i" } },
-        { lotNo: { $regex: search.toUpperCase(), $options: "i" } },
-        { vehicleNo: { $regex: search.toUpperCase(), $options: "i" } },
-        { transport: { $regex: search, $options: "i" } },
-        { farmerId: { $in: farmers.map((f) => f._id) } },
-      ];
-    }
-
     const purchases = await Purchase.find(query)
       .populate("farmerId", "name phone address")
-      .sort({ purchaseDate: -1, createdAt: -1 })
+      .sort({ purchaseDate: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -221,111 +194,28 @@ exports.getPurchaseById = async (req, res) => {
 // Update purchase
 exports.updatePurchase = async (req, res) => {
   try {
-    const {
-      purchaseDate,
-      coldStorage,
-      vehicleNo,
-      lotNo,
-      transport,
-      farmerId,
-      variety,
-      quality,
-      bags,
-      weightPerBag,
-      ratePerKg,
-      remarks,
-    } = req.body;
-
-    // Validate required fields
-    if (
-      !farmerId ||
-      !coldStorage ||
-      !vehicleNo ||
-      !lotNo ||
-      !transport ||
-      !variety ||
-      !bags ||
-      !weightPerBag ||
-      !ratePerKg
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "सभी required fields भरना जरूरी है",
-      });
-    }
-
-    // Calculate totals
-    const { totalWeight, amount } = calculatePurchaseTotals(
-      bags,
-      weightPerBag,
-      ratePerKg
-    );
-
-    const updatedPurchase = await Purchase.findByIdAndUpdate(
-      req.params.id,
-      {
-        purchaseDate,
-        coldStorage,
-        vehicleNo: vehicleNo.toUpperCase(),
-        lotNo: lotNo.toUpperCase(),
-        transport,
-        farmerId,
-        variety,
-        quality: quality || "Other",
-        bags: Number(bags),
-        weightPerBag: Number(weightPerBag),
-        totalWeight,
-        ratePerKg: Number(ratePerKg),
-        amount,
-        remarks: remarks || "",
-        updatedAt: Date.now(),
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedPurchase) {
-      return res.status(404).json({
-        success: false,
-        message: "Purchase not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Purchase updated successfully",
-      purchase: updatedPurchase,
+    const updated = await Purchase.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
     });
+    res.status(200).json(updated);
   } catch (error) {
-    console.error("Error updating purchase:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while updating purchase",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Update failed" });
   }
 };
 
 // Delete purchase
 exports.deletePurchase = async (req, res) => {
   try {
-    const deletedPurchase = await Purchase.findByIdAndDelete(req.params.id);
-
-    if (!deletedPurchase) {
-      return res.status(404).json({
-        success: false,
-        message: "Purchase not found",
-      });
+    const deleted = await Purchase.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Purchase not found" });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "Purchase deleted successfully",
-    });
+    res.status(200).json({ message: "Purchase deleted successfully" });
   } catch (error) {
     console.error("Error deleting purchase:", error);
     res.status(500).json({
       success: false,
-      message: "Server error while deleting purchase",
+      message: "Error deleting purchase",
       error: error.message,
     });
   }
@@ -334,9 +224,7 @@ exports.deletePurchase = async (req, res) => {
 // Get field suggestions for auto-fill
 exports.getFieldSuggestions = async (req, res) => {
   try {
-    const { field, farmerId } = req.query;
-    
-    console.log("Suggestions request received:", { field, farmerId });
+    const { field, search } = req.query;
     
     if (!field) {
       return res.status(400).json({
@@ -345,47 +233,52 @@ exports.getFieldSuggestions = async (req, res) => {
       });
     }
 
-    // Validate that the field is one of the allowed fields
-    const allowedFields = ['coldStorage', 'vehicleNo', 'lotNo', 'transport'];
-    if (!allowedFields.includes(field)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid field parameter. Allowed fields: coldStorage, vehicleNo, lotNo, transport"
-      });
-    }
+    let suggestions = [];
+    const searchRegex = new RegExp(search || '', 'i');
 
-    let query = {};
-    if (farmerId) {
-      // Validate farmerId is a valid ObjectId
-      if (!mongoose.Types.ObjectId.isValid(farmerId)) {
+    switch (field) {
+      case 'coldStorage':
+        suggestions = await Purchase.distinct('coldStorage', { 
+          coldStorage: searchRegex 
+        });
+        break;
+      case 'vehicleNo':
+        suggestions = await Purchase.distinct('vehicleNo', { 
+          vehicleNo: searchRegex 
+        });
+        break;
+      case 'variety':
+        suggestions = await Purchase.distinct('variety', { 
+          variety: searchRegex 
+        });
+        break;
+      case 'quality':
+        suggestions = await Purchase.distinct('quality', { 
+          quality: searchRegex 
+        });
+        break;
+      case 'transport':
+        suggestions = await Purchase.distinct('transport', { 
+          transport: searchRegex 
+        });
+        break;
+      default:
         return res.status(400).json({
           success: false,
-          message: "Invalid farmer ID format"
+          message: "Invalid field parameter"
         });
-      }
-      query.farmerId = farmerId;
     }
-
-    console.log("Database query:", query);
-
-    // Get distinct values for the requested field
-    const suggestions = await Purchase.find(query)
-      .distinct(field)
-      .sort();
-
-    console.log("Suggestions found:", suggestions);
 
     res.status(200).json({
       success: true,
-      field,
-      suggestions: suggestions.filter(s => s && s.trim() !== '')
+      suggestions: suggestions.filter(s => s).slice(0, 10) // Limit to 10 suggestions
     });
   } catch (error) {
     console.error("Error fetching field suggestions:", error);
     res.status(500).json({
       success: false,
-      message: "Server error while fetching suggestions",
-      error: error.message,
+      message: "Failed to fetch field suggestions",
+      error: error.message
     });
   }
 };
@@ -401,23 +294,21 @@ exports.getPurchaseReport = async (req, res) => {
     if (fromDate || toDate) {
       query.purchaseDate = {};
       if (fromDate) query.purchaseDate.$gte = new Date(fromDate);
-      if (toDate)
+      if (toDate) {
         query.purchaseDate.$lte = new Date(
           new Date(toDate).setHours(23, 59, 59, 999)
         );
+      }
     }
 
-    // Farmer ID filter
     if (farmerId && mongoose.Types.ObjectId.isValid(farmerId)) {
       query.farmerId = farmerId;
     }
 
-    // Cold storage filter
     if (coldStorage) {
       query.coldStorage = { $regex: coldStorage, $options: "i" };
     }
 
-    // Quality filter
     if (quality) {
       query.quality = quality;
     }
@@ -426,12 +317,12 @@ exports.getPurchaseReport = async (req, res) => {
       .populate("farmerId", "name phone address")
       .sort({ purchaseDate: 1 });
 
-    res.status(200).json(reports);
+    res.status(200).json({ data: reports });
   } catch (error) {
     console.error("Error fetching purchase report:", error);
     res.status(500).json({
       success: false,
-      message: "Server error while fetching report",
+      message: "Failed to fetch purchase report",
     });
   }
 };

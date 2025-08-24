@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Layout from '../layout/Layout'; // Adjust path
 import '../../css/print.css'; // Ensure you have a print.css for print styles (optional, but good for print styling)
+import API_ENDPOINTS from '../../config/api';
 
 const FarmerLedger = () => {
   const { farmerId } = useParams();
@@ -34,7 +35,7 @@ const FarmerLedger = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get(`https://cold-storage-system-1s.onrender.com/api/farmers/ledger/${farmerId}`, {
+      const res = await axios.get(`${API_ENDPOINTS.FARMERS_LEDGER}/${farmerId}`, {
         params: { from: fromDate, to: toDate }
       });
       setLedger(res.data);

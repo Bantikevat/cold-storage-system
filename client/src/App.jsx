@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLogin from "./components/admin/AdminLogin";
 import OTPVerify from "./components/admin/OTPVerify";
 import Dashboard from "./components/admin/Dashboard";
+import Profile from "./components/admin/Profile";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 // ✅ Farmer Module Components
@@ -34,6 +35,7 @@ import EditCustomer from "./components/Sales/EditCustomer";
 // ✅ Error Handling Wrapper
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import Inventory from "./components/inventory/InventoryManagement";
+import StockReport from "./components/inventory/StockReport";
 import Automation from "./components/automation/AutomationCenter";
 
 // ❌ Missing Components (commented for now)
@@ -54,6 +56,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
@@ -103,6 +113,7 @@ const App = () => {
           <Route path="/customer-list" element={<CustomerList />} />
           <Route path="/edit-customer/:id" element={<EditCustomer />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/stock-report" element={<StockReport />} />
 
           {/* ✅ Automation Module Route */}
           <Route path="/automation" element={<Automation />} />

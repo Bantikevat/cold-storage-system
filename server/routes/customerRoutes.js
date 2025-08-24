@@ -8,6 +8,7 @@ const customerController = require('../controllers/customerController');
 router.post('/add', customerController.addCustomer);
 
 // Get All Customers
+router.get('/', customerController.getAllCustomers); // Add base route
 router.get('/all', customerController.getAllCustomers);
 
 // Get Customer by ID

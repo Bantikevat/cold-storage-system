@@ -95,18 +95,24 @@ const OTPVerify = () => {
     try {
       setLoading(true); // Set loading state for the button
       // Send OTP and admin email for verification
-      const res = await axios.post('https://cold-storage-system-1s.onrender.com/api/otp/verify-otp', { otp: otpToVerify, email: email });
+      const res = await axios.post('https://cold-storage-system-1s.onrender.com/api/otp/verify-otp', { 
+        otp: otpToVerify, 
+        email: email 
+      });
+      
       if (res.data.verified) {
+        // Store JWT token for authentication
+        localStorage.setItem('adminToken', res.data.token);
         navigate('/dashboard'); // Navigate to dashboard on successful verification
       } else {
-        setError('Invalid OTP. Please try again.'); // Display error for invalid OTP
+        setError(res.data.message || 'Invalid OTP. Please try again.'); // Display error for invalid OTP
         setOtp(new Array(6).fill('')); // Clear OTP on invalid attempt
         inputRefs.current[0].focus(); // Focus first input for re-entry
       }
     } catch (err) {
       console.error("OTP verification failed:", err);
       // Display a generic error message for verification failure
-      setError('OTP verification failed. Please try again later.');
+      setError(err.response?.data?.message || 'OTP verification failed. Please try again later.');
       setOtp(new Array(6).fill('')); // Clear OTP on error
       inputRefs.current[0].focus(); // Focus first input for re-entry
     } finally {

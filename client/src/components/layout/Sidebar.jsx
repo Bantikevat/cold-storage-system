@@ -225,6 +225,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             >
               📦 Manage Inventory
             </NavLink>
+            <NavLink
+              to="/stock-report"
+              className={({ isActive }) =>
+                `hover:translate-x-1 transition hover:text-green-400 px-3 py-1.5 rounded-lg flex items-center ${
+                  isActive ? "text-green-500 font-medium bg-green-900/30" : ""
+                }`
+              }
+            >
+              📊 Stock Report
+            </NavLink>
           </MenuItem>
 
           <MenuItem title="🤖 Automation">

@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import * as XLSX from 'xlsx';
-import { FaDownload, FaPrint } from 'react-icons/fa';
-import Layout from '../layout/Layout';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import * as XLSX from "xlsx";
+import { FaDownload, FaPrint } from "react-icons/fa";
+import Layout from "../layout/Layout";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import API_ENDPOINTS from "../../config/api";
 
 const MySwal = withReactContent(Swal);
 
 const ReportPage = () => {
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Fetch purchase reports from backend
   const fetchReport = async () => {
@@ -25,9 +26,9 @@ const ReportPage = () => {
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
     try {
-      const res = await axios.get('https://cold-storage-system-1s.onrender.com/api/purchases/report', {
+      const res = await axios.get(API_ENDPOINTS.PURCHASES_REPORT, {
         params: {
           fromDate,
           toDate,
@@ -36,9 +37,9 @@ const ReportPage = () => {
       setReports(res.data);
       setFilteredReports(res.data);
     } catch (err) {
-      console.error('Error fetching report:', err);
-      setError('Failed to fetch report. Please try again.');
-      MySwal.fire('Error', 'Failed to fetch report.', 'error');
+      console.error("Error fetching report:", err);
+      setError("Failed to fetch report. Please try again.");
+      MySwal.fire("Error", "Failed to fetch report.", "error");
     } finally {
       setLoading(false);
     }
@@ -46,10 +47,10 @@ const ReportPage = () => {
 
   // Filter reports by farmer name (client side)
   useEffect(() => {
-    if (searchTerm.trim() === '') {
+    if (searchTerm.trim() === "") {
       setFilteredReports(reports);
     } else {
-      const filtered = reports.filter(r =>
+      const filtered = reports.filter((r) =>
         r.farmerId?.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredReports(filtered);
@@ -61,8 +62,8 @@ const ReportPage = () => {
     const today = new Date();
     const lastMonth = new Date(today);
     lastMonth.setDate(today.getDate() - 30);
-    setFromDate(lastMonth.toISOString().split('T')[0]);
-    setToDate(today.toISOString().split('T')[0]);
+    setFromDate(lastMonth.toISOString().split("T")[0]);
+    setToDate(today.toISOString().split("T")[0]);
   }, []);
 
   // Fetch report when filters change
@@ -73,36 +74,43 @@ const ReportPage = () => {
   // Export filtered reports to Excel
   const handleExport = () => {
     if (filteredReports.length === 0) {
-      MySwal.fire('Info', 'No data to export.', 'info');
+      MySwal.fire("Info", "No data to export.", "info");
       return;
     }
     const data = filteredReports.map((r) => ({
-      Date: new Date(r.purchaseDate).toLocaleDateString('en-IN'),
-      Farmer: r.farmerId?.name || 'N/A',
+      Date: new Date(r.purchaseDate).toLocaleDateString("en-IN"),
+      Farmer: r.farmerId?.name || "N/A",
       Variety: r.variety,
       Bags: r.bags,
-      'Weight per Bag (KG)': r.weightPerBag,
-      'Total Weight (KG)': r.totalWeight,
-      'Rate per KG (₹)': r.ratePerKg,
-      'Amount (₹)': r.amount,
+      "Weight per Bag (KG)": r.weightPerBag,
+      "Total Weight (KG)": r.totalWeight,
+      "Rate per KG (₹)": r.ratePerKg,
+      "Amount (₹)": r.amount,
       Quality: r.quality,
       Remarks: r.remarks,
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Purchase_Report');
-    XLSX.writeFile(wb, 'Purchase_Report.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "Purchase_Report");
+    XLSX.writeFile(wb, "Purchase_Report.xlsx");
   };
 
   return (
     <Layout>
       <div className="p-4 md:p-6 bg-white min-h-screen">
-        <h1 className="text-2xl font-bold mb-6 text-blue-600">📊 Purchase Report</h1>
+        <h1 className="text-2xl font-bold mb-6 text-blue-600">
+          📊 Purchase Report
+        </h1>
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-100 p-4 rounded shadow mb-6">
           <div>
-            <label htmlFor="fromDate" className="block mb-1 text-sm font-medium text-gray-700">From Date:</label>
+            <label
+              htmlFor="fromDate"
+              className="block mb-1 text-sm font-medium text-gray-700"
+            >
+              From Date:
+            </label>
             <input
               type="date"
               id="fromDate"
@@ -112,7 +120,12 @@ const ReportPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="toDate" className="block mb-1 text-sm font-medium text-gray-700">To Date:</label>
+            <label
+              htmlFor="toDate"
+              className="block mb-1 text-sm font-medium text-gray-700"
+            >
+              To Date:
+            </label>
             <input
               type="date"
               id="toDate"
@@ -122,7 +135,12 @@ const ReportPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="search" className="block mb-1 text-sm font-medium text-gray-700">Search Farmer Name:</label>
+            <label
+              htmlFor="search"
+              className="block mb-1 text-sm font-medium text-gray-700"
+            >
+              Search Farmer Name:
+            </label>
             <input
               type="text"
               id="search"
@@ -149,7 +167,9 @@ const ReportPage = () => {
         </div>
 
         {/* Report Table */}
-        {loading && <p className="text-center text-gray-600">Loading report...</p>}
+        {loading && (
+          <p className="text-center text-gray-600">Loading report...</p>
+        )}
         {error && <p className="text-center text-red-600">{error}</p>}
 
         {!loading && !error && (
@@ -173,8 +193,10 @@ const ReportPage = () => {
                 {filteredReports.length > 0 ? (
                   filteredReports.map((r, i) => (
                     <tr key={i} className="border-t hover:bg-gray-50">
-                      <td className="p-3">{new Date(r.purchaseDate).toLocaleDateString('en-IN')}</td>
-                      <td className="p-3">{r.farmerId?.name || 'N/A'}</td>
+                      <td className="p-3">
+                        {new Date(r.purchaseDate).toLocaleDateString("en-IN")}
+                      </td>
+                      <td className="p-3">{r.farmerId?.name || "N/A"}</td>
                       <td className="p-3">{r.variety}</td>
                       <td className="p-3">{r.bags}</td>
                       <td className="p-3">{r.weightPerBag}</td>
@@ -182,12 +204,14 @@ const ReportPage = () => {
                       <td className="p-3">₹{r.ratePerKg}</td>
                       <td className="p-3 font-semibold">₹{r.amount}</td>
                       <td className="p-3">{r.quality}</td>
-                      <td className="p-3">{r.remarks || '—'}</td>
+                      <td className="p-3">{r.remarks || "—"}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="10" className="p-4 text-center text-gray-500">No data found for the selected filters.</td>
+                    <td colSpan="10" className="p-4 text-center text-gray-500">
+                      No data found for the selected filters.
+                    </td>
                   </tr>
                 )}
               </tbody>

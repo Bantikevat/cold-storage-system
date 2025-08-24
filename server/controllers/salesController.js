@@ -1,5 +1,6 @@
 // controllers/salesController.js
 const Sale = require("../models/Sale");
+const Stock = require("../models/Stock");
 
 // Add Sale Function
 exports.addSale = async (req, res) => {
