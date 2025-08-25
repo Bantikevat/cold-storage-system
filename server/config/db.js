@@ -1,22 +1,19 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    const uri =
-      process.env.NODE_ENV === "production"
-        ? process.env.MONGO_URI_ATLAS // ✅ Deploy hone par Atlas use hoga
-        : process.env.MONGO_URI_LOCAL; // ✅ Local run hone par local DB
+    const mongoURI =
+      process.env.MONGO_URI || "mongodb://127.0.0.1:27017/ColdStorage";
 
-    const conn = await mongoose.connect(uri);
+    const conn = await mongoose.connect(mongoURI);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-    console.log(`🟢 Database Name: ${conn.connection.name}`);
-  } catch (err) {
-    console.error("❌ MongoDB connection error:", err.message);
+  } catch (error) {
+    console.error(`❌ MongoDB Connection Error: ${error.message}`);
     process.exit(1);
   }
 };
 
-module.exports = connectDB;
+export default connectDB;
 
 // const mongoose = require("mongoose");
 
