@@ -24,24 +24,23 @@ const app = express();
 // ✅ Allowed frontend origins (local + deployed)
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://cold-storage-system-1ss.onrender.com", // ✅ Your frontend hosted on Render
+  "https://cold-storage-system-1s.onrender.com", // backend service
+  "https://cold-storage-system-1ss.onrender.com", // frontend static site
 ];
 
-// ✅ CORS Middleware with Preflight Handling
+// ✅ CORS Middleware
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman/curl
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow Postman, curl
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
       } else {
         console.log("❌ Blocked by CORS:", origin);
-        return callback(new Error("Not allowed by CORS"));
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -101,5 +100,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
-
