@@ -2,43 +2,63 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const atlasURI = process.env.MONGO_URI;
-    const localURI =
-      process.env.MONGO_URI_LOCAL || "mongodb://127.0.0.1:27017/coldstorage";
+    const uri =
+      process.env.NODE_ENV === "production"
+        ? process.env.MONGO_URI_ATLAS // ✅ Deploy hone par Atlas use hoga
+        : process.env.MONGO_URI_LOCAL; // ✅ Local run hone par local DB
 
-    // Agar Atlas URI set hai to usko use karo, warna Local
-    const MONGO_URI = atlasURI || localURI;
-
-    console.log(
-      `🔗 Attempting MongoDB connection → ${
-        MONGO_URI.includes("127.0.0.1") ? "Local" : "Atlas"
-      }`
-    );
-
-    const conn = await mongoose.connect(MONGO_URI, {
-      retryWrites: true,
-      w: "majority",
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-    });
-
-    console.log("✅ MongoDB Connected:", conn.connection.host);
-    console.log("🟢 Database:", conn.connection.name);
-
-    mongoose.connection.on("error", (err) => {
-      console.error("❌ MongoDB Error:", err.message);
-    });
-
-    mongoose.connection.on("disconnected", () => {
-      console.warn("⚠️ MongoDB Disconnected");
-    });
+    const conn = await mongoose.connect(uri);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    console.log(`🟢 Database Name: ${conn.connection.name}`);
   } catch (err) {
-    console.error("❌ MongoDB connection failed:", err.message);
+    console.error("❌ MongoDB connection error:", err.message);
     process.exit(1);
   }
 };
 
 module.exports = connectDB;
+
+// const mongoose = require("mongoose");
+
+// const connectDB = async () => {
+//   try {
+//     const atlasURI = process.env.MONGO_URI;
+//     const localURI =
+//       process.env.MONGO_URI_LOCAL || "mongodb://127.0.0.1:27017/coldstorage";
+
+//     // Agar Atlas URI set hai to usko use karo, warna Local
+//     const MONGO_URI = atlasURI || localURI;
+
+//     console.log(
+//       `🔗 Attempting MongoDB connection → ${
+//         MONGO_URI.includes("127.0.0.1") ? "Local" : "Atlas"
+//       }`
+//     );
+
+//     const conn = await mongoose.connect(MONGO_URI, {
+//       retryWrites: true,
+//       w: "majority",
+//       serverSelectionTimeoutMS: 5000,
+//       socketTimeoutMS: 45000,
+//     });
+
+//     console.log("✅ MongoDB Connected:", conn.connection.host);
+//     console.log("🟢 Database:", conn.connection.name);
+
+//     mongoose.connection.on("error", (err) => {
+//       console.error("❌ MongoDB Error:", err.message);
+//     });
+
+//     mongoose.connection.on("disconnected", () => {
+//       console.warn("⚠️ MongoDB Disconnected");
+//     });
+//   } catch (err) {
+//     console.error("❌ MongoDB connection failed:", err.message);
+//     process.exit(1);
+//   }
+// };
+
+// module.exports = connectDB;
 
 // const mongoose = require("mongoose");
 
